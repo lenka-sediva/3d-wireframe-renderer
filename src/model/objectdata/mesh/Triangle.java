@@ -2,12 +2,6 @@ package model.objectdata.mesh;
 
 import transforms.Point3D;
 
-/**
- *
- * @author KŠ
- * 18.11.2025 14:21
- */
-
 public class Triangle extends Mesh {
 
     public Triangle() {

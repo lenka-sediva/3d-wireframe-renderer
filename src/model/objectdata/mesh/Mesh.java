@@ -11,6 +11,7 @@ public class Mesh {
 
     List<Point3D> vertexBuffer = new ArrayList<>();
     List<Integer> indexBuffer = new ArrayList<>();
+    Mat4 modelMat  = new Mat4Identity(); // jednotková matice
     // color
     // boolean isSelected
 
@@ -24,5 +25,13 @@ public class Mesh {
 
     public List<Integer> getIB() {
         return indexBuffer;
+    }
+
+    public Mat4 getModelMat() {
+        return modelMat;
+    }
+
+    public void setModelMat(Mat4 modelMat) {
+        this.modelMat = modelMat;
     }
 }
