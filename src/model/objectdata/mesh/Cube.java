@@ -36,8 +36,8 @@ public class Cube extends Mesh {
         addIndices(0, 4, 1, 5, 2, 6, 3, 7);
     }
 
-    // default cube na pozici 0,0,0 se stranou 100
+    // default cube na pozici 0,0,0 se stranou 1
     public Cube() {
-        this(0, 0, 0, 100);
+        this(0, 0, 0, 1);
     }
 }

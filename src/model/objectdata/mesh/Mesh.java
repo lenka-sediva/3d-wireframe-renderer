@@ -3,6 +3,7 @@ package model.objectdata.mesh;
 import model.objectdata.Line;
 import transforms.*;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -11,8 +12,8 @@ public class Mesh {
 
     List<Point3D> vertexBuffer = new ArrayList<>();
     List<Integer> indexBuffer = new ArrayList<>();
-    Mat4 modelMat  = new Mat4Identity(); // jednotková matice
-    // color
+    Mat4 modelMat  = new Mat4Identity(); // jednotková matice, původní stav tělesa
+    Color color = Color.WHITE; // výchozí barva
     // boolean isSelected
 
     protected void addIndices(Integer... indices) {
@@ -33,5 +34,13 @@ public class Mesh {
 
     public void setModelMat(Mat4 modelMat) {
         this.modelMat = modelMat;
+    }
+
+    public Color getColor() {
+        return color;
+    }
+
+    public void setColor(Color color) {
+        this.color = color;
     }
 }
