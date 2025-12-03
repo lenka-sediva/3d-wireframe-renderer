@@ -6,7 +6,7 @@ import transforms.Vec3D;
 
 import java.awt.*;
 
-public class Axis extends Mesh {
+public class Axis {
 
     public Mesh xAxis;
     public Mesh yAxis;

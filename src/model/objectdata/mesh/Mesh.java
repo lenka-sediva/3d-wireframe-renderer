@@ -14,7 +14,7 @@ public class Mesh {
     List<Integer> indexBuffer = new ArrayList<>();
     Mat4 modelMat  = new Mat4Identity(); // jednotková matice, původní stav tělesa
     Color color = Color.WHITE; // výchozí barva
-    // boolean isSelected
+    boolean isSelected;
 
     protected void addIndices(Integer... indices) {
         indexBuffer.addAll(Arrays.asList(indices));
@@ -42,5 +42,13 @@ public class Mesh {
 
     public void setColor(Color color) {
         this.color = color;
+    }
+
+    public boolean isSelected() {
+        return isSelected;
+    }
+
+    public void setSelected(boolean isSelected) {
+        this.isSelected = isSelected;
     }
 }

@@ -92,7 +92,7 @@ public class Renderer3D {
                 b.getZ() >= 0 && b.getZ() <= b.getW();
 
         // úsečka je v zorném poli, pokud je alespoň 1 bod uvnitř
-        return aInside || bInside;
+        return aInside && bInside;
     }
 
     /**

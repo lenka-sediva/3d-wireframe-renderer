@@ -1,5 +1,6 @@
 package controller;
 
+import model.objectdata.cubics.Bezier;
 import model.objectdata.mesh.*;
 import model.rasterops.rasterizer.LineRasterizer;
 import model.rasterops.rasterizer.LineRasterizerBresenham;
@@ -19,13 +20,13 @@ public class Controller3D implements Controller {
 
     private Axis axis;
     private Mesh triangle;
-    private Mesh arrow;
     private Mesh cube;
     private Mesh sphere;
     private List<Mesh> objects = new ArrayList<>();
+    private Mesh bezier;
 
     private Camera view; // pozorovatel
-    Mat4 proj;
+    Mat4 proj, orto;
 
     private double uhel = 90.d;
     private double pohyb = 0.1; // přesnější pohyb = 0.01
@@ -33,7 +34,6 @@ public class Controller3D implements Controller {
     private Mat4 maticePohybu;
 
     private int lastMouseX, lastMouseY;
-    private boolean dragging = false;
 
     public Controller3D(Panel panel) {
         this.panel = panel;
@@ -49,7 +49,13 @@ public class Controller3D implements Controller {
         view = new Camera(new Vec3D(3, 3, 3), Math.PI, -1*(Math.PI/4), 3, true); // Vec3D = pozice, Math.PI = azimut, záporný zenit (aby se díval dolů)
 
         proj = new Mat4PerspRH(Math.toRadians(90), (double) panel.getHeight() / panel.getWidth(), 0.1, 100); // perspektivní matice projekce
-        // proj = new Mat4OrthoRH(panel.getWidth() / 10., panel.getHeight() / 10., 0.1, 100); // orotogonální matice projekce
+
+        // ortogonální matice projekce
+        double scale = 5;
+        double aspect = (double) panel.getWidth() / panel.getHeight();
+        orto = new Mat4OrthoRH(scale * aspect, scale, 0.1, 100);
+
+        //orto = new Mat4OrthoRH(panel.getWidth() / 10., panel.getHeight() / 10., 0.1, 100); // orotogonální matice projekce
 
         liner = new LineRasterizerBresenham(panel.getRaster());
         renderer3D = new Renderer3D(liner, panel);
@@ -57,15 +63,17 @@ public class Controller3D implements Controller {
         renderer3D.setProj(proj); // matice projekce
 
         triangle = new Triangle();
-        arrow = new Arrow();
         cube = new Cube();
         axis = new Axis();
         sphere = new Sphere();
+        bezier = new Bezier();
 
         objects.add(triangle);
-        objects.add(arrow);
         objects.add(cube);
         objects.add(sphere);
+        objects.add(bezier);
+
+        selectedObject(cube); // krychle je výchozí vybraná
     }
 
     @Override
@@ -73,22 +81,14 @@ public class Controller3D implements Controller {
         panel.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
-                dragging = true;
                 lastMouseX = e.getX();
                 lastMouseY = e.getY();
-            }
-
-            @Override
-            public void mouseReleased(MouseEvent e) {
-                dragging = false;
             }
         });
 
         panel.addMouseMotionListener(new MouseMotionAdapter() {
             @Override
             public void mouseDragged(MouseEvent e) {
-                if (!dragging) return;
-
                 int dx = e.getX() - lastMouseX;
                 int dy = e.getY() - lastMouseY;
 
@@ -116,15 +116,25 @@ public class Controller3D implements Controller {
                     // pro rotaci
                     case KeyEvent.VK_R:
                         maticeRotace = new Mat4Rot(Math.toRadians(uhel), new Vec3D(0, 0, 1));
-                        arrow.setModelMat(arrow.getModelMat().mul(maticeRotace)); // přenásobení maticí rotace
+                        for (Mesh m : objects) {
+                            if (m.isSelected()) {
+                                m.setModelMat(m.getModelMat().mul(maticeRotace)); // přenásobení maticí rotace
+                            }
+                        }
                         break;
 
                     // pro translaci (pohyb)
                     case KeyEvent.VK_T:
                         // pohyb po ose x
                         maticePohybu = new Mat4Transl(pohyb, 0, 0);
-                        arrow.setModelMat(arrow.getModelMat().mul(maticePohybu));
+                        for (Mesh m : objects) {
+                            if (m.isSelected()) {
+                                m.setModelMat(m.getModelMat().mul(maticePohybu));
+                            }
+                        }
                         break;
+
+                    // TODO změna měřítka (scale)
 
                     // vrácení objektů zpátky
                     case KeyEvent.VK_O:
@@ -133,7 +143,7 @@ public class Controller3D implements Controller {
                         }
                         break;
 
-                    // pohyby pozorovatele
+                    // pohyby pozorovatele WASD
                     case KeyEvent.VK_W:
                         view = view.forward(1);
                         renderer3D.setView(view.getViewMatrix());
@@ -153,13 +163,44 @@ public class Controller3D implements Controller {
                         view = view.right(1);
                         renderer3D.setView(view.getViewMatrix());
                         break;
+
+                    // projekční pohled (výchozí)
+                    case KeyEvent.VK_P:
+                        renderer3D.setProj(proj);
+                        break;
+
+                    // orto pohled
+                    case KeyEvent.VK_H:
+                        renderer3D.setProj(orto);
+                        break;
+
+                    // vybrání objektů
+                    case KeyEvent.VK_K:
+                        selectedObject(cube);
+                        panel.setCurrentObject("krychle");
+                        break;
+
+                    case KeyEvent.VK_E:
+                        selectedObject(sphere);
+                        panel.setCurrentObject("koule");
+                        break;
                 }
                 renderScene();
             }
         });
     }
 
-    // posílá do seznamu objekty a vyrenderuje je všechny najednou
+    private void selectedObject(Mesh obj) {
+        // zruší výběr předchozích objektů
+        for (Mesh m : objects) {
+            m.setSelected(false);
+        }
+
+        // označí nový objekt
+        obj.setSelected(true);
+    }
+
+    // posílá do seznamu objekty a vyrenderuje je všechny najednou + šipky
     private void renderScene() {
         panel.clear();
 
