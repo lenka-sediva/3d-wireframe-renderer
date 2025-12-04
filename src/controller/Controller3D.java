@@ -1,6 +1,6 @@
 package controller;
 
-import model.objectdata.cubics.Bezier;
+import model.objectdata.cubics.*;
 import model.objectdata.mesh.*;
 import model.rasterops.rasterizer.LineRasterizer;
 import model.rasterops.rasterizer.LineRasterizerBresenham;
@@ -19,19 +19,15 @@ public class Controller3D implements Controller {
     private LineRasterizer liner;
 
     private Axis axis;
-    private Mesh triangle;
-    private Mesh cube;
-    private Mesh sphere;
-    private List<Mesh> objects = new ArrayList<>();
-    private Mesh bezier;
+    private Mesh cube, sphere, bezier, coons, ferguson;
+    private final List<Mesh> objects = new ArrayList<>();
 
     private Camera view; // pozorovatel
     Mat4 proj, orto;
 
-    private double uhel = 90.d;
-    private double pohyb = 0.1; // přesnější pohyb = 0.01
-    private Mat4 maticeRotace;
-    private Mat4 maticePohybu;
+    private final double angle = 90.d; // uhel
+    private final double speed = 0.5; // rychlost pozorovatele
+    private Mat4 rotationMatrix;
 
     private int lastMouseX, lastMouseY;
 
@@ -45,8 +41,7 @@ public class Controller3D implements Controller {
 
     @Override
     public void initObjects() {
-        // TODO změnit azimuth, aby byl pozorovatel uprostřed
-        view = new Camera(new Vec3D(3, 3, 3), Math.PI, -1*(Math.PI/4), 3, true); // Vec3D = pozice, Math.PI = azimut, záporný zenit (aby se díval dolů)
+        view = new Camera(new Vec3D(0, 0, 0), Math.PI * 1.25, Math.PI * -0.125, 5, false); // Vec3D = pozice, Math.PI = azimut, záporný zenit (aby se díval dolů)
 
         proj = new Mat4PerspRH(Math.toRadians(90), (double) panel.getHeight() / panel.getWidth(), 0.1, 100); // perspektivní matice projekce
 
@@ -62,16 +57,18 @@ public class Controller3D implements Controller {
         renderer3D.setView(view.getViewMatrix()); // získáme pohledovou matici
         renderer3D.setProj(proj); // matice projekce
 
-        triangle = new Triangle();
         cube = new Cube();
         axis = new Axis();
         sphere = new Sphere();
         bezier = new Bezier();
+        coons = new Coons();
+        ferguson = new Ferguson();
 
-        objects.add(triangle);
         objects.add(cube);
         objects.add(sphere);
         objects.add(bezier);
+        objects.add(coons);
+        objects.add(ferguson);
 
         selectedObject(cube); // krychle je výchozí vybraná
     }
@@ -115,21 +112,46 @@ public class Controller3D implements Controller {
 
                     // pro rotaci
                     case KeyEvent.VK_R:
-                        maticeRotace = new Mat4Rot(Math.toRadians(uhel), new Vec3D(0, 0, 1));
+                        rotationMatrix = new Mat4Rot(Math.toRadians(angle), new Vec3D(0, 0, 1));
                         for (Mesh m : objects) {
                             if (m.isSelected()) {
-                                m.setModelMat(m.getModelMat().mul(maticeRotace)); // přenásobení maticí rotace
+                                m.setModelMat(m.getModelMat().mul(rotationMatrix)); // přenásobení maticí rotace
                             }
                         }
                         break;
 
-                    // pro translaci (pohyb)
-                    case KeyEvent.VK_T:
-                        // pohyb po ose x
-                        maticePohybu = new Mat4Transl(pohyb, 0, 0);
+                    // translace (posunutí) vlevo
+                    case KeyEvent.VK_LEFT:
                         for (Mesh m : objects) {
                             if (m.isSelected()) {
-                                m.setModelMat(m.getModelMat().mul(maticePohybu));
+                                m.setModelMat(m.getModelMat().mul(new Mat4Transl(-0.1, 0, 0))); // přenásobení maticí translace
+                            }
+                        }
+                        break;
+
+                    // translace (posunutí) vpravo
+                    case KeyEvent.VK_RIGHT:
+                        for (Mesh m : objects) {
+                            if (m.isSelected()) {
+                                m.setModelMat(m.getModelMat().mul(new Mat4Transl(0.1, 0, 0)));
+                            }
+                        }
+                        break;
+
+                    // nahoru
+                    case KeyEvent.VK_UP:
+                        for (Mesh m : objects) {
+                            if (m.isSelected()) {
+                                m.setModelMat(m.getModelMat().mul(new Mat4Transl(0, 0.1, 0)));
+                            }
+                        }
+                        break;
+
+                    // dolů
+                    case KeyEvent.VK_DOWN:
+                        for (Mesh m : objects) {
+                            if (m.isSelected()) {
+                                m.setModelMat(m.getModelMat().mul(new Mat4Transl(0, -0.1, 0)));
                             }
                         }
                         break;
@@ -145,22 +167,22 @@ public class Controller3D implements Controller {
 
                     // pohyby pozorovatele WASD
                     case KeyEvent.VK_W:
-                        view = view.forward(1);
+                        view = view.forward(speed);
                         renderer3D.setView(view.getViewMatrix());
                         break;
 
                     case KeyEvent.VK_S:
-                        view = view.backward(1);
+                        view = view.backward(speed);
                         renderer3D.setView(view.getViewMatrix());
                         break;
 
                     case KeyEvent.VK_A:
-                        view = view.left(1);
+                        view = view.left(speed);
                         renderer3D.setView(view.getViewMatrix());
                         break;
 
                     case KeyEvent.VK_D:
-                        view = view.right(1);
+                        view = view.right(speed);
                         renderer3D.setView(view.getViewMatrix());
                         break;
 
