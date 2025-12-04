@@ -38,9 +38,6 @@ public class LineRasterizerBresenham extends LineRasterizer {
 
         int error = dx - dy; // počáteční chyba (odchylka) od ideální úsečky
 
-        int thickness = 3; // tloušťka čáry
-        int radius = thickness / 2; // poloměr kruhu kolem každého pixelu (kapsle)
-
         while (true) {
             // vykreslí kruh kolem aktuálního bodu, aby byla čára silná
             raster.setPixel(x1, y1, color.getRGB());
