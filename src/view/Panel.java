@@ -20,19 +20,31 @@ public class Panel extends JPanel {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         raster.repaint(g);
-        g.setColor(Color.WHITE);
+        g.setColor(Color.ORANGE);
         g.setFont(new Font("SansSerif", Font.BOLD, 16));
+
         // levý dolní roh
-        g.drawString("Nápověda:", 10, getHeight() - 85);
-        g.drawString("[WASD] pohyb pozorovatele", 10, getHeight() - 60);
-        g.drawString("[šipky] posunutí objektů", 10, getHeight() - 35);
-        g.drawString("Aktuálně vybraný objekt: " + currentObject, 10, getHeight() - 10);
+        g.drawString("Nápověda:", 10, getHeight() - 135);
+        g.setColor(Color.WHITE);
+        g.drawString("[WASD] pohyb pozorovatele", 10, getHeight() - 110);
+        g.drawString("[šipky] posunutí objektů", 10, getHeight() - 85);
+        g.drawString("[+] zvětšení objektu, [-] zmenšení objektu", 10, getHeight() - 60);
+        g.drawString("[C] smazání, [O] původní stav, [R] rotace", 10, getHeight() - 35);
+        g.drawString("Aktuálně vybraný objekt: ", 10, getHeight() - 10);
+        g.setColor(Color.ORANGE);
+        g.drawString(currentObject, 205, getHeight() - 10);
+
         // levý horní roh
+        g.setColor(Color.WHITE);
         g.drawString("[K] krychle", 10, 25);
         g.drawString("[E] koule", 10, 50);
         g.drawString("[B] bezier", 10, 75);
         g.drawString("[N] coons", 10, 100);
         g.drawString("[F] ferguson", 10, 125);
+
+        // pravý dolní roh
+        g.drawString("Ortogonální projekce [H]", getWidth() - 190, getHeight() - 35);
+        g.drawString("Perspektivní projekce [P]", getWidth() - 195, getHeight() - 10); // výchozí
     }
 
     public void setCurrentObject(String currentObject) {
