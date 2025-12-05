@@ -203,6 +203,30 @@ public class Controller3D implements Controller {
                         renderer3D.setView(view.getViewMatrix());
                         break;
 
+                    // natočení kamery vlevo
+                    case KeyEvent.VK_Q:
+                        view = view.addAzimuth(-0.1);
+                        renderer3D.setView(view.getViewMatrix());
+                        break;
+
+                    // natočení kamery vpravo
+                    case KeyEvent.VK_E:
+                        view = view.addAzimuth(0.1);
+                        renderer3D.setView(view.getViewMatrix());
+                        break;
+
+                    // pohyb kamery nahoru
+                    case KeyEvent.VK_SHIFT:
+                        view = view.up(speed);
+                        renderer3D.setView(view.getViewMatrix());
+                        break;
+
+                    // pohyb kamery dolů
+                    case KeyEvent.VK_CONTROL:
+                        view = view.down(speed);
+                        renderer3D.setView(view.getViewMatrix());
+                        break;
+
                     // projekční pohled (výchozí)
                     case KeyEvent.VK_P:
                         renderer3D.setProj(proj);
@@ -219,7 +243,7 @@ public class Controller3D implements Controller {
                         panel.setCurrentObject("krychle");
                         break;
 
-                    case KeyEvent.VK_E:
+                    case KeyEvent.VK_U:
                         selectedObject(sphere);
                         panel.setCurrentObject("koule");
                         break;

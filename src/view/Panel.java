@@ -24,9 +24,8 @@ public class Panel extends JPanel {
         g.setFont(new Font("SansSerif", Font.BOLD, 16));
 
         // levý dolní roh
-        g.drawString("Nápověda:", 10, getHeight() - 135);
+        g.drawString("Nápověda:", 10, getHeight() - 110);
         g.setColor(Color.WHITE);
-        g.drawString("[WASD] pohyb pozorovatele", 10, getHeight() - 110);
         g.drawString("[šipky] posunutí objektů", 10, getHeight() - 85);
         g.drawString("[+] zvětšení objektu, [-] zmenšení objektu", 10, getHeight() - 60);
         g.drawString("[C] smazání, [O] původní stav, [R] rotace", 10, getHeight() - 35);
@@ -37,14 +36,22 @@ public class Panel extends JPanel {
         // levý horní roh
         g.setColor(Color.WHITE);
         g.drawString("[K] krychle", 10, 25);
-        g.drawString("[E] koule", 10, 50);
+        g.drawString("[U] koule", 10, 50);
         g.drawString("[B] bezier", 10, 75);
         g.drawString("[N] coons", 10, 100);
         g.drawString("[F] ferguson", 10, 125);
 
         // pravý dolní roh
-        g.drawString("Ortogonální projekce [H]", getWidth() - 190, getHeight() - 35);
-        g.drawString("Perspektivní projekce [P]", getWidth() - 195, getHeight() - 10); // výchozí
+        g.drawString("Ortogonální projekce [H]", getWidth() - 195, getHeight() - 35);
+        g.drawString("Perspektivní projekce [P]", getWidth() - 200, getHeight() - 10); // výchozí
+
+        // pravý horní roh
+        g.setColor(Color.ORANGE);
+        g.drawString("Pozorovatel:", getWidth() - 105, 25);
+        g.setColor(Color.WHITE);
+        g.drawString("[WASD] pohyb", getWidth() - 120, 50);
+        g.drawString("[Q] vlevo, [E] vpravo", getWidth() - 160, 75);
+        g.drawString("[SHIFT] nahoru, [CTRL] dolů", getWidth() - 225, 100);
     }
 
     public void setCurrentObject(String currentObject) {
