@@ -1,6 +1,6 @@
 package controller;
 
-import model.objectdata.cubics.*;
+import model.objectdata.mesh.cubics.*;
 import model.objectdata.mesh.*;
 import model.rasterops.rasterizer.LineRasterizer;
 import model.rasterops.rasterizer.LineRasterizerBresenham;

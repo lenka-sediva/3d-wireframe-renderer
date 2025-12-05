@@ -1,4 +1,4 @@
-package model.objectdata.cubics;
+package model.objectdata.mesh.cubics;
 
 import model.objectdata.mesh.Mesh;
 import transforms.Cubic;
