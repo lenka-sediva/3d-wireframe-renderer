@@ -22,9 +22,17 @@ public class Panel extends JPanel {
         raster.repaint(g);
         g.setColor(Color.WHITE);
         g.setFont(new Font("SansSerif", Font.BOLD, 16));
-        g.drawString("Nápověda:", 10, getHeight() - 60);
-        g.drawString("[WASD] pohyb", 10, getHeight() - 35);
+        // levý dolní roh
+        g.drawString("Nápověda:", 10, getHeight() - 85);
+        g.drawString("[WASD] pohyb pozorovatele", 10, getHeight() - 60);
+        g.drawString("[šipky] posunutí objektů", 10, getHeight() - 35);
         g.drawString("Aktuálně vybraný objekt: " + currentObject, 10, getHeight() - 10);
+        // levý horní roh
+        g.drawString("[K] krychle", 10, 25);
+        g.drawString("[E] koule", 10, 50);
+        g.drawString("[B] bezier", 10, 75);
+        g.drawString("[N] coons", 10, 100);
+        g.drawString("[F] ferguson", 10, 125);
     }
 
     public void setCurrentObject(String currentObject) {

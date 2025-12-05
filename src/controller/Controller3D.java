@@ -156,7 +156,24 @@ public class Controller3D implements Controller {
                         }
                         break;
 
-                    // TODO změna měřítka (scale)
+                    // změna měřítka (scale)
+                    case KeyEvent.VK_PLUS:
+                    case KeyEvent.VK_ADD: // numerická klávesnice +
+                        for (Mesh m : objects) {
+                            if (m.isSelected()) {
+                                scale(m, 1.1);
+                            }
+                        }
+                        break;
+
+                    case KeyEvent.VK_MINUS:
+                    case KeyEvent.VK_SUBTRACT: // numerická klávesnice -
+                        for (Mesh m : objects) {
+                            if (m.isSelected()) {
+                                scale(m, 0.9);
+                            }
+                        }
+                        break;
 
                     // vrácení objektů zpátky
                     case KeyEvent.VK_O:
@@ -206,6 +223,21 @@ public class Controller3D implements Controller {
                         selectedObject(sphere);
                         panel.setCurrentObject("koule");
                         break;
+
+                    case KeyEvent.VK_B:
+                        selectedObject(bezier);
+                        panel.setCurrentObject("bezier");
+                        break;
+
+                    case KeyEvent.VK_N:
+                        selectedObject(coons);
+                        panel.setCurrentObject("coons");
+                        break;
+
+                    case KeyEvent.VK_F:
+                        selectedObject(ferguson);
+                        panel.setCurrentObject("ferguson");
+                        break;
                 }
                 renderScene();
             }
@@ -220,6 +252,17 @@ public class Controller3D implements Controller {
 
         // označí nový objekt
         obj.setSelected(true);
+    }
+
+    // factor = o kolik škáluju
+    void scale(Mesh m, double factor) {
+        Vec3D c = m.getCenter();
+        m.setModelMat(
+                new Mat4Transl(c.opposite()) // opposite = záporné souřadnice
+                        .mul(new Mat4Scale(factor))
+                        .mul(new Mat4Transl(c))
+                        .mul(m.getModelMat())
+        );
     }
 
     // posílá do seznamu objekty a vyrenderuje je všechny najednou + šipky

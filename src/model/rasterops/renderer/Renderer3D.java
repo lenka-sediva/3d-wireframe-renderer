@@ -2,7 +2,6 @@ package model.rasterops.renderer;
 
 import model.objectdata.Line;
 import model.objectdata.mesh.Mesh;
-import model.objectdata.mesh.Triangle;
 import model.rasterops.rasterizer.LineRasterizer;
 import transforms.Mat4;
 import transforms.Point3D;
@@ -23,51 +22,40 @@ public class Renderer3D {
 
     public void render(Mesh mesh) {
         // MVP (Model-View-Projection) matice
-        // uchovává v sobě informaci o projekční matici a kde se nachází pozorovatel
         Mat4 mvp = new Mat4(mesh.getModelMat()).mul(view).mul(proj);
 
         for(int i = 0; i < mesh.getIB().size(); i += 2) {
             int index1 = mesh.getIB().get(i);
-            int index2 = mesh.getIB().get(i+1);
+            int index2 = mesh.getIB().get(i + 1);
 
             Point3D a = mesh.getVB().get(index1);
             Point3D b = mesh.getVB().get(index2);
 
-            if (mesh instanceof Triangle) { // pro modely v DC
-//                Line line = new Line((int) Math.round(a.getX()),
-//                        (int) Math.round(a.getY()),
-//                        (int) Math.round(b.getX()),
-//                        (int) Math.round(b.getY())
-//                );
-//
-//                liner.setColor(Color.RED);
-//                liner.rasterize(line);
-            } else { // pro modely v NDC
-                a = a.mul(mvp);
-                b = b.mul(mvp);
+            // pro všechny objekty v NDC
+            a = a.mul(mvp);
+            b = b.mul(mvp);
 
-                //test(a,b);
+            //test(a,b);
 
-                // 4. KROK grafické pipeline
-                // podmínka pro ořezání
-                if (isInView(a, b)) {
-                    // 5. KROK grafické pipeline
-                    // dehomogenizace (vydělení souřadnic w)
-                    Vec3D aDehomog = new Vec3D(a.getX() / a.getW(), a.getY() / a.getW(), a.getZ() / a.getW());
-                    Vec3D bDehomog = new Vec3D(b.getX() / b.getW(), b.getY() / b.getW(), b.getZ() / b.getW());
+            // 4. KROK grafické pipeline
+            // podmínka pro ořezání
+            if (isInView(a, b)) {
+                // 5. KROK grafické pipeline
+                // dehomogenizace (vydělení souřadnic w)
+                Vec3D aDehomog = new Vec3D(a.getX() / a.getW(), a.getY() / a.getW(), a.getZ() / a.getW());
+                Vec3D bDehomog = new Vec3D(b.getX() / b.getW(), b.getY() / b.getW(), b.getZ() / b.getW());
 
-                    // transformace do okna
-                    Vec3D aToWindow = transformToWindow(aDehomog);
-                    Vec3D bToWindow = transformToWindow(bDehomog);
+                // transformace do okna obrazovky
+                Vec3D aToWindow = transformToWindow(aDehomog);
+                Vec3D bToWindow = transformToWindow(bDehomog);
 
-                    Line line = new Line((int) Math.round(aToWindow.getX()),
-                            (int) Math.round(aToWindow.getY()),
-                            (int) Math.round(bToWindow.getX()),
-                            (int) Math.round(bToWindow.getY()),
-                            mesh.getColor().getRGB()
-                    );
-                    liner.rasterize(line);
-                }
+                Line line = new Line((int) Math.round(aToWindow.getX()),
+                        (int) Math.round(aToWindow.getY()),
+                        (int) Math.round(bToWindow.getX()),
+                        (int) Math.round(bToWindow.getY()),
+                        mesh.getColor().getRGB()
+                );
+                liner.rasterize(line);
             }
         }
     }

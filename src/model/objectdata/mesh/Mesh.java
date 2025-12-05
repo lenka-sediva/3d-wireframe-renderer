@@ -1,6 +1,5 @@
 package model.objectdata.mesh;
 
-import model.objectdata.Line;
 import transforms.*;
 
 import java.awt.*;
@@ -50,5 +49,19 @@ public class Mesh {
 
     public void setSelected(boolean isSelected) {
         this.isSelected = isSelected;
+    }
+
+    // vypočítá střed objektu pro správný scale
+    public Vec3D getCenter() {
+        double x = 0, y = 0, z = 0;
+
+        for (Point3D p : vertexBuffer) {
+            x += p.getX();
+            y += p.getY();
+            z += p.getZ();
+        }
+
+        int size = vertexBuffer.size();
+        return new Vec3D(x / size, y / size, z / size);
     }
 }
