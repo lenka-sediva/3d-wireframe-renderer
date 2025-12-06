@@ -40,6 +40,8 @@ public class Panel extends JPanel {
         g.drawString("[B] bezier", 10, 75);
         g.drawString("[N] coons", 10, 100);
         g.drawString("[F] ferguson", 10, 125);
+        g.drawString("[T] torus", 10, 150);
+        g.drawString("[V] viviani", 10, 175);
 
         // pravý dolní roh
         g.drawString("Ortogonální projekce [H]", getWidth() - 195, getHeight() - 35);

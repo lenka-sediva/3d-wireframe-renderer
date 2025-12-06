@@ -2,6 +2,8 @@ package controller;
 
 import model.objectdata.mesh.cubics.*;
 import model.objectdata.mesh.*;
+import model.objectdata.mesh.parametric.Torus;
+import model.objectdata.mesh.parametric.VivianiCurve;
 import model.rasterops.rasterizer.LineRasterizer;
 import model.rasterops.rasterizer.LineRasterizerBresenham;
 import model.rasterops.renderer.Renderer3D;
@@ -19,7 +21,7 @@ public class Controller3D implements Controller {
     private LineRasterizer liner;
 
     private Axis axis;
-    private Mesh cube, sphere, bezier, coons, ferguson;
+    private Mesh cube, sphere, bezier, coons, ferguson, viviani, torus;
     private final List<Mesh> objects = new ArrayList<>();
 
     private Camera view; // pozorovatel
@@ -44,13 +46,7 @@ public class Controller3D implements Controller {
         view = new Camera(new Vec3D(0, 0, 0), Math.PI * 1.25, Math.PI * -0.125, 5, false); // Vec3D = pozice, Math.PI = azimut, záporný zenit (aby se díval dolů)
 
         proj = new Mat4PerspRH(Math.toRadians(90), (double) panel.getHeight() / panel.getWidth(), 0.1, 100); // perspektivní matice projekce
-
-        // ortogonální matice projekce
-        double scale = 5;
-        double aspect = (double) panel.getWidth() / panel.getHeight();
-        orto = new Mat4OrthoRH(scale * aspect, scale, 0.1, 100);
-
-        //orto = new Mat4OrthoRH(panel.getWidth() / 10., panel.getHeight() / 10., 0.1, 100); // orotogonální matice projekce
+        orto = new Mat4OrthoRH(panel.getWidth() / 100., panel.getHeight() / 100., 0.1, 100); // orotogonální matice projekce
 
         liner = new LineRasterizerBresenham(panel.getRaster());
         renderer3D = new Renderer3D(liner, panel);
@@ -63,12 +59,16 @@ public class Controller3D implements Controller {
         bezier = new Bezier();
         coons = new Coons();
         ferguson = new Ferguson();
+        viviani = new VivianiCurve();
+        torus = new Torus();
 
         objects.add(cube);
         objects.add(sphere);
         objects.add(bezier);
         objects.add(coons);
         objects.add(ferguson);
+        objects.add(viviani);
+        objects.add(torus);
 
         selectedObject(cube); // krychle je výchozí vybraná
     }
@@ -227,12 +227,12 @@ public class Controller3D implements Controller {
                         renderer3D.setView(view.getViewMatrix());
                         break;
 
-                    // projekční pohled (výchozí)
+                    // perspektivní projekce (výchozí) = vzdálenější objekty se jeví menší
                     case KeyEvent.VK_P:
                         renderer3D.setProj(proj);
                         break;
 
-                    // orto pohled
+                    // orto projekce
                     case KeyEvent.VK_H:
                         renderer3D.setProj(orto);
                         break;
@@ -261,6 +261,16 @@ public class Controller3D implements Controller {
                     case KeyEvent.VK_F:
                         selectedObject(ferguson);
                         panel.setCurrentObject("ferguson");
+                        break;
+
+                    case KeyEvent.VK_T:
+                        selectedObject(torus);
+                        panel.setCurrentObject("torus");
+                        break;
+
+                    case KeyEvent.VK_V:
+                        selectedObject(viviani);
+                        panel.setCurrentObject("viviani");
                         break;
                 }
                 renderScene();

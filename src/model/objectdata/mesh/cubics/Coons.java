@@ -11,10 +11,10 @@ public class Coons extends Mesh {
 
     public Coons() {
         // 4 řídící body – konvexní obal křivky
-        Point3D g1 = new Point3D(-3, -1, -1);
-        Point3D g2 = new Point3D(-3, 1, 0.5);
-        Point3D g3 = new Point3D(-1, -1, 0.5);
-        Point3D g4 = new Point3D(-1, 1, 1);
+        Point3D g1 = new Point3D(-4, -1, -1);
+        Point3D g2 = new Point3D(-4, 1, 0.5);
+        Point3D g3 = new Point3D(-2, -1, 0.5);
+        Point3D g4 = new Point3D(-4, 1, 1);
 
         Point3D[] points = new Point3D[] {g1, g2, g3, g4};
 
@@ -30,11 +30,12 @@ public class Coons extends Mesh {
         }
 
         // indexBuffer pro spojitou čáru
-        for (int i = 0; i < getVB().size(); i++) {
+        for (int i = 0; i < getVB().size() - 1; i++) {
             getIB().add(i);
+            getIB().add(i + 1);
         }
 
-        this.setColor(Color.CYAN);
+        this.setColor(Color.WHITE);
 
         this.setModelMat(new Mat4Identity());
     }

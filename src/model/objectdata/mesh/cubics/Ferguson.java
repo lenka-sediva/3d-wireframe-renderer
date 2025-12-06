@@ -12,7 +12,7 @@ public class Ferguson extends Mesh {
     public Ferguson() {
         // 2 koncové body
         Point3D p0 = new Point3D(-3, -1, -1); // počáteční bod
-        Point3D p1 = new Point3D(-1, 1, 1);   // koncový bod
+        Point3D p1 = new Point3D(-3, 1, 1);   // koncový bod
 
         // 2 tečné vektory v koncových bodech
         Point3D t0 = new Point3D(1, 2, 0);    // tečný vektor na začátku
@@ -32,8 +32,9 @@ public class Ferguson extends Mesh {
         }
 
         // indexBuffer pro spojitou čáru
-        for (int i = 0; i < getVB().size(); i++) {
+        for (int i = 0; i < getVB().size() - 1; i++) {
             getIB().add(i);
+            getIB().add(i + 1);
         }
 
         this.setColor(Color.ORANGE);

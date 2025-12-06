@@ -10,11 +10,11 @@ import java.awt.*;
 public class Bezier extends Mesh {
 
     public Bezier() {
-        // řídící body křivky, koncové body v protilehlých vrcholech krychle
-        Point3D p0 = new Point3D(0, 0, 0); // levý spodní roh
-        Point3D p1 = new Point3D(1, 1, 1); // zakřivení nahoru
-        Point3D p2 = new Point3D(0, 1, 0.3); // zakřivení dopředu
-        Point3D p3 = new Point3D(1, 0, 0.7); // pravý horní roh
+        // řídící body křivky + koncové body ve 2 protilehlých vrcholech krychle
+        Point3D p0 = new Point3D(-0.5, -0.5, -0.5); // začátek (levý spodní zadní roh)
+        Point3D p1 = new Point3D(-0.3, 0.4, 0.1); // řídící bod
+        Point3D p2 = new Point3D(0.4, -0.2, 0.3); // řídící bod
+        Point3D p3 = new Point3D(0.5, 0.5, 0.5); // konec (pravý horní přední roh)
 
         Point3D[] points = new Point3D[] {p0, p1, p2, p3};
 
@@ -30,8 +30,9 @@ public class Bezier extends Mesh {
         }
 
         // indexBuffer pro spojitou čáru
-        for (int i = 0; i < getVB().size(); i ++) {
+        for (int i = 0; i < getVB().size() - 1; i ++) {
             getIB().add(i);
+            getIB().add(i + 1);
         }
 
         // barva křivky
