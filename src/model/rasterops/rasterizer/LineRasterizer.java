@@ -35,4 +35,8 @@ public abstract class LineRasterizer {
     public void setColor(int color) {
         this.color = new Color(color);
     }
+
+    public void setRaster(Raster raster) {
+        this.raster = raster;
+    }
 }

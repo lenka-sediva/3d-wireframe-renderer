@@ -4,6 +4,7 @@ import model.objectdata.mesh.cubics.*;
 import model.objectdata.mesh.*;
 import model.objectdata.mesh.parametric.Torus;
 import model.objectdata.mesh.parametric.VivianiCurve;
+import model.rasterdata.RasterBI;
 import model.rasterops.rasterizer.LineRasterizer;
 import model.rasterops.rasterizer.LineRasterizerBresenham;
 import model.rasterops.renderer.Renderer3D;
@@ -75,6 +76,22 @@ public class Controller3D implements Controller {
 
     @Override
     public void initListeners(Panel panel) {
+        panel.addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                RasterBI newRaster = new RasterBI(panel.getWidth(), panel.getHeight());
+                newRaster.clear();
+                panel.setRaster(newRaster);
+                liner.setRaster(newRaster);
+
+                proj = new Mat4PerspRH(Math.toRadians(90), (double) panel.getHeight() / panel.getWidth(), 0.1, 100);
+                orto = new Mat4OrthoRH(panel.getWidth() / 100.0, panel.getHeight() / 100.0, 0.1, 100);
+
+                renderer3D.setProj(proj);
+                renderScene();
+            }
+        });
+
         panel.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
@@ -289,7 +306,7 @@ public class Controller3D implements Controller {
     }
 
     // factor = o kolik škáluju
-    void scale(Mesh m, double factor) {
+    private void scale(Mesh m, double factor) {
         Vec3D c = m.getCenter();
         m.setModelMat(
                 new Mat4Transl(c.opposite()) // opposite = záporné souřadnice

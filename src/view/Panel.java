@@ -8,7 +8,7 @@ import java.awt.*;
 
 public class Panel extends JPanel {
 
-    private final Raster raster;
+    private Raster raster;
     private String currentObject = "krychle";
 
     public Panel(int width, int height) {
@@ -67,5 +67,10 @@ public class Panel extends JPanel {
 
     public void clear() {
         raster.clear();
+    }
+
+    public void setRaster(RasterBI newRaster) {
+        raster = newRaster;
+        repaint();
     }
 }
