@@ -22,7 +22,7 @@ public class Controller3D implements Controller {
     private LineRasterizer liner;
 
     private Axis axis;
-    private Mesh cube, sphere, bezier, coons, ferguson, viviani, torus;
+    private Mesh cube, pyramid, sphere, bezier, coons, ferguson, viviani, torus;
     private final List<Mesh> objects = new ArrayList<>();
 
     private Camera view; // pozorovatel
@@ -56,6 +56,7 @@ public class Controller3D implements Controller {
 
         cube = new Cube();
         axis = new Axis();
+        pyramid = new Pyramid();
         sphere = new Sphere();
         bezier = new Bezier();
         coons = new Coons();
@@ -64,6 +65,7 @@ public class Controller3D implements Controller {
         torus = new Torus();
 
         objects.add(cube);
+        objects.add(pyramid);
         objects.add(sphere);
         objects.add(bezier);
         objects.add(coons);
@@ -258,6 +260,11 @@ public class Controller3D implements Controller {
                     case KeyEvent.VK_K:
                         selectedObject(cube);
                         panel.setCurrentObject("krychle");
+                        break;
+
+                    case KeyEvent.VK_Y:
+                        selectedObject(pyramid);
+                        panel.setCurrentObject("pyramida");
                         break;
 
                     case KeyEvent.VK_U:

@@ -36,12 +36,13 @@ public class Panel extends JPanel {
         // levý horní roh
         g.setColor(Color.WHITE);
         g.drawString("[K] krychle", 10, 25);
-        g.drawString("[U] koule", 10, 50);
-        g.drawString("[B] bezier", 10, 75);
-        g.drawString("[N] coons", 10, 100);
-        g.drawString("[F] ferguson", 10, 125);
-        g.drawString("[T] torus", 10, 150);
-        g.drawString("[V] viviani", 10, 175);
+        g.drawString("[Y] pyramida", 10, 50);
+        g.drawString("[U] koule", 10, 75);
+        g.drawString("[B] bezier", 10, 100);
+        g.drawString("[N] coons", 10, 125);
+        g.drawString("[F] ferguson", 10, 150);
+        g.drawString("[T] torus", 10, 175);
+        g.drawString("[V] viviani", 10, 200);
 
         // pravý dolní roh
         g.drawString("Ortogonální projekce [H]", getWidth() - 195, getHeight() - 35);
