@@ -16,7 +16,7 @@ public class Mesh {
     private final String shortcut;
     private Color color;
     private Color defaultColor; // původní barva objektu
-    boolean isSelected;
+    private boolean isSelected;
 
     public Mesh(String name, String shortcut, Color defaultColor) {
         this.name = name;

@@ -24,11 +24,11 @@ public class Controller3D implements Controller {
     private LineRasterizer liner;
 
     private Axis axis;
-    private Mesh cube, pyramid, sphere, bezier, coons, ferguson, viviani, torus;
+    private Mesh cube, pyramid, sphere, cylinder, torus, bezier, coons, ferguson, viviani;
     private final List<Mesh> objects = new ArrayList<>();
 
     private Camera view; // pozorovatel
-    Mat4 proj, orto;
+    private Mat4 proj, orto;
 
     private final double angle = 90.d; // uhel
     private final double speed = 0.5; // rychlost pozorovatele
@@ -66,6 +66,7 @@ public class Controller3D implements Controller {
         axis = new Axis();
         pyramid = new Pyramid();
         sphere = new Sphere();
+        cylinder = new Cylinder();
         bezier = new Bezier();
         coons = new Coons();
         ferguson = new Ferguson();
@@ -76,6 +77,7 @@ public class Controller3D implements Controller {
         objects.add(pyramid);
         objects.add(sphere);
         objects.add(torus);
+        objects.add(cylinder);
         objects.add(bezier);
         objects.add(coons);
         objects.add(ferguson);
@@ -327,6 +329,11 @@ public class Controller3D implements Controller {
                         panel.setCurrentObject("viviani");
                         break;
 
+                    case KeyEvent.VK_I:
+                        selectedObject(cylinder);
+                        panel.setCurrentObject("válec");
+                        break;
+
                     // animace v čase = rotace
                     case KeyEvent.VK_R:
                         if (!rotating) {
@@ -389,7 +396,7 @@ public class Controller3D implements Controller {
 
     // animace rotace v čase
     private void startTimer() {
-        timer = new Timer(1000 / FPS, e -> {
+        timer = new Timer(1000 / FPS, _ -> {
             for (Mesh m : objects) {
                 if (m.isSelected()) {
                     Vec3D c = m.getCenter();
