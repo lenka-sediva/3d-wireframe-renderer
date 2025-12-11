@@ -11,6 +11,7 @@ import model.rasterops.renderer.Renderer3D;
 import transforms.*;
 import view.Panel;
 
+import javax.swing.*;
 import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,17 +35,23 @@ public class Controller3D implements Controller {
 
     private int lastMouseX, lastMouseY;
 
+    // pro animaci
+    private Timer timer;
+    private boolean rotating = false;
+    private static final int FPS = 60;
+
     public Controller3D(Panel panel) {
         this.panel = panel;
 
         initObjects();
         initListeners(panel);
+        startTimer();
         renderScene();
     }
 
     @Override
     public void initObjects() {
-        view = new Camera(new Vec3D(0, 0, 0), Math.PI * 1.25, Math.PI * -0.125, 5, false); // Vec3D = pozice, Math.PI = azimut, záporný zenit (aby se díval dolů)
+        view = new Camera(new Vec3D(0, 0, 0), Math.PI * 1.25, Math.PI * -0.125, 5, false);
 
         proj = new Mat4PerspRH(Math.toRadians(90), (double) panel.getHeight() / panel.getWidth(), 0.1, 100); // perspektivní matice projekce
         orto = new Mat4OrthoRH(panel.getWidth() / 100., panel.getHeight() / 100., 0.1, 100); // orotogonální matice projekce
@@ -296,6 +303,17 @@ public class Controller3D implements Controller {
                         selectedObject(viviani);
                         panel.setCurrentObject("viviani");
                         break;
+
+                    // animace v čase = rotace
+                    case KeyEvent.VK_J:
+                        if (!rotating) {
+                            timer.start();
+                            rotating = true;
+                        } else {
+                            timer.stop();
+                            rotating = false;
+                        }
+                        break;
                 }
                 renderScene();
             }
@@ -321,6 +339,24 @@ public class Controller3D implements Controller {
                         .mul(new Mat4Transl(c))
                         .mul(m.getModelMat())
         );
+    }
+
+    // animace rotace v čase
+    private void startTimer() {
+        timer = new Timer(1000 / FPS, e -> {
+            for (Mesh m : objects) {
+                if (m.isSelected()) {
+                    Vec3D c = m.getCenter();
+                    m.setModelMat(
+                            new Mat4Transl(c.opposite())
+                                    .mul(new Mat4Rot(Math.toRadians(2), new Vec3D(0, 1, 0)))
+                                    .mul(new Mat4Transl(c))
+                                    .mul(m.getModelMat())
+                    );
+                }
+            }
+            renderScene();
+        });
     }
 
     // posílá do seznamu objekty a vyrenderuje je všechny najednou + šipky

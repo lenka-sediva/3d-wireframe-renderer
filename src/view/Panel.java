@@ -24,9 +24,10 @@ public class Panel extends JPanel {
         g.setFont(new Font("SansSerif", Font.BOLD, 16));
 
         // levý dolní roh
-        g.drawString("Nápověda:", 10, getHeight() - 110);
+        g.drawString("Nápověda:", 10, getHeight() - 135);
         g.setColor(Color.WHITE);
-        g.drawString("[šipky] posunutí objektů", 10, getHeight() - 85);
+        g.drawString("[šipky] posunutí objektů", 10, getHeight() - 110);
+        g.drawString("[J] animace rotace vybraného objektu", 10, getHeight() - 85);
         g.drawString("[+] zvětšení objektu, [-] zmenšení objektu", 10, getHeight() - 60);
         g.drawString("[C] smazání, [O] původní stav, [R] rotace", 10, getHeight() - 35);
         g.drawString("Aktuálně vybraný objekt: ", 10, getHeight() - 10);
