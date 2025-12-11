@@ -2,11 +2,9 @@ package controller;
 
 import model.objectdata.mesh.cubics.*;
 import model.objectdata.mesh.*;
-import model.objectdata.mesh.parametric.Torus;
-import model.objectdata.mesh.parametric.VivianiCurve;
+import model.objectdata.mesh.parametric.*;
 import model.rasterdata.RasterBI;
-import model.rasterops.rasterizer.LineRasterizer;
-import model.rasterops.rasterizer.LineRasterizerBresenham;
+import model.rasterops.rasterizer.*;
 import model.rasterops.renderer.Renderer3D;
 import transforms.*;
 import view.Panel;
@@ -35,6 +33,7 @@ public class Controller3D implements Controller {
     private Mat4 rotationMatrix;
 
     private int lastMouseX, lastMouseY;
+    private boolean dragging = false;
 
     // pro animaci
     private Timer timer;
@@ -111,16 +110,25 @@ public class Controller3D implements Controller {
             public void mousePressed(MouseEvent e) {
                 lastMouseX = e.getX();
                 lastMouseY = e.getY();
+                dragging = false; // začíná nový stisk myši
+            }
 
-                Mesh closest = findClosestMesh(lastMouseX, lastMouseY);
-                selectedObject(closest); // označí objekt nejblíž kurzoru myši za vybraný
-                renderScene();
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                if (!dragging) {
+                    // vybere objekt, pokud během držení myši nedošlo k dragování
+                    Mesh closest = findClosestMesh(lastMouseX, lastMouseY);
+                    selectedObject(closest); // označí objekt nejblíž kurzoru myši za vybraný
+                    renderScene();
+                }
             }
         });
 
         panel.addMouseMotionListener(new MouseMotionAdapter() {
             @Override
             public void mouseDragged(MouseEvent e) {
+                dragging = true; // uživatel táhne myší
+
                 int dx = e.getX() - lastMouseX;
                 int dy = e.getY() - lastMouseY;
 
