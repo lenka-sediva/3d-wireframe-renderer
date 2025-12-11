@@ -362,6 +362,20 @@ public class Controller3D implements Controller {
                 renderScene();
             }
         });
+
+        // listener pro slider přesnosti křivek
+        panel.getPrecisionSlider().addChangeListener(e -> {
+            int precision = panel.getPrecision();
+            for (Mesh m : objects) {
+                if (m instanceof Curve curve) {
+                    Mat4 currentMat = curve.getModelMat(); // uloží aktuální transformaci
+                    curve.generate(precision); // znovu vytvoří body podle slideru
+                    curve.setModelMat(currentMat); // obnoví transformaci
+                }
+            }
+            renderScene(); // překreslí scénu
+            panel.requestFocusInWindow(); // vrátí focus panelu, aby KeyListener opět fungoval
+        });
     }
 
     private Mesh getSelectedObject() {

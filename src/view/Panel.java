@@ -13,10 +13,40 @@ public class Panel extends JPanel {
     private Raster raster;
     private String currentObjectName = "krychle";
     private List<Mesh> objects; // seznam všech objektů
+    private final JSlider precisionSlider; // slider pro přesnost křivek
+    private final JLabel sliderLabel; // popisek nad sliderem
 
     public Panel(int width, int height) {
         setPreferredSize(new Dimension(width, height));
+        setLayout(null); // absolutní pozicování komponent
         raster = new RasterBI(width, height);
+
+        // slider
+        precisionSlider = new JSlider(10, 300, 100);
+        add(precisionSlider);
+
+        // popisek nad sliderem
+        sliderLabel = new JLabel("Přesnost vykreslení křivek", SwingConstants.CENTER);
+        sliderLabel.setForeground(Color.WHITE);
+        sliderLabel.setFont(new Font("SansSerif", Font.BOLD, 16));
+        add(sliderLabel);
+
+        // listener pro resize = centrování slideru a popisku
+        addComponentListener(new java.awt.event.ComponentAdapter() {
+            @Override
+            public void componentResized(java.awt.event.ComponentEvent e) {
+                centerSlider();
+            }
+        });
+    }
+
+    // přesune slider a popisek doprostřed panelu
+    private void centerSlider() {
+        int sliderWidth = 300;
+        int sliderHeight = 40;
+        int center = (getWidth() - sliderWidth) / 2;
+        precisionSlider.setBounds(center, 40, sliderWidth, sliderHeight);
+        sliderLabel.setBounds(center, 10, sliderWidth, 20); // popisek pro slider
     }
 
     @Override
@@ -65,10 +95,17 @@ public class Panel extends JPanel {
         repaint();
     }
 
-    // předá seznam všech objektů, aby Panel mohl kreslit jejich názvy v jejich barvě
     public void setObjects(List<Mesh> objects) {
         this.objects = objects;
         repaint();
+    }
+
+    public int getPrecision() {
+        return precisionSlider.getValue();
+    }
+
+    public JSlider getPrecisionSlider() {
+        return precisionSlider;
     }
 
     public Raster getRaster() {

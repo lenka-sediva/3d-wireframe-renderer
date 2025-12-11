@@ -1,25 +1,27 @@
 package model.objectdata.mesh.parametric;
 
-import model.objectdata.mesh.Mesh;
+import model.objectdata.mesh.Curve;
 import transforms.Point3D;
 
 import java.awt.*;
-import java.util.List;
 
-public class VivianiCurve extends Mesh {
-    private static final int steps = 100; // počet bodů k vykreslení křivky
+public class VivianiCurve extends Curve {
 
     public VivianiCurve() {
         super("Viviani", "V", Color.PINK);
+        generate(50); // výchozí přesnost
+    }
 
-        double tStep = 2 * Math.PI / steps; // krok mezi body křivky
+    @Override
+    public void generate(int precision) {
+        // vyčistí staré body
+        getVB().clear();
+        getIB().clear();
 
-        List<Point3D> vertexBuffer = getVB();
-        List<Integer> indexBuffer = getIB();
+        double tStep = 2 * Math.PI / precision;
 
-        // přidávání bodů do vertexBufferu
-        for (int i = 0; i <= steps; i++) {
-            double t = -Math.PI / 2 + i * tStep;
+        for (int i = 0; i <= precision; i++) {
+            double t = -Math.PI / 2 + i * tStep; // úhel
 
             // parametrická Vivianiho křivka
             double x = Math.cos(t) * Math.cos(t);
@@ -27,16 +29,15 @@ public class VivianiCurve extends Mesh {
             double z = Math.sin(t);
 
             // škálování do krychle [-0.5,0.5]
-            x = x - 0.5; // x = [-0.5, 0.5]
-            y = y / 2; // y = [-0.25, 0.25]
-            z = z / 2; // z = [-0.5, 0.5]
+            x = x - 0.5;
+            y = y / 2;
+            z = z / 2;
 
-            vertexBuffer.add(new Point3D(x, y, z));
+            getVB().add(new Point3D(x, y, z));
 
-            // spojení s předchozím bodem pomocí indexBufferu
             if (i > 0) {
-                indexBuffer.add(i - 1);
-                indexBuffer.add(i);
+                getIB().add(i - 1);
+                getIB().add(i);
             }
         }
     }
