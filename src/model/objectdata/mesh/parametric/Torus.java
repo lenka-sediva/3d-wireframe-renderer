@@ -15,7 +15,7 @@ public class Torus extends Mesh {
 
     // konstruktor s možností nastavit pozici
     public Torus(double centerX, double centerY, double centerZ) {
-        super();
+        super("Torus", "T", Color.CYAN);
 
         List<Point3D> vertexBuffer = getVB();
         List<Integer> indexBuffer = getIB();
@@ -50,7 +50,6 @@ public class Torus extends Mesh {
                 }
             }
         }
-        setColor(Color.CYAN);
     }
 
     // výchozí konstruktor – torus bude vlevo od počátku

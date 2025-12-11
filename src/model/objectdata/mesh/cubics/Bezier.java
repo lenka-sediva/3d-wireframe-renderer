@@ -10,6 +10,8 @@ import java.awt.*;
 public class Bezier extends Mesh {
 
     public Bezier() {
+        super("Bezier", "B", Color.MAGENTA);
+
         // řídící body křivky + koncové body ve 2 protilehlých vrcholech krychle
         Point3D p0 = new Point3D(-0.5, -0.5, -0.5); // začátek (levý spodní zadní roh)
         Point3D p1 = new Point3D(-0.3, 0.4, 0.1); // řídící bod
@@ -34,9 +36,6 @@ public class Bezier extends Mesh {
             getIB().add(i);
             getIB().add(i + 1);
         }
-
-        // barva křivky
-        this.setColor(Color.MAGENTA);
 
         // jednotková matice
         this.setModelMat(new Mat4Identity());

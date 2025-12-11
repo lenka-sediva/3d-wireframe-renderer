@@ -2,9 +2,12 @@ package model.objectdata.mesh;
 
 import transforms.Point3D;
 
+import java.awt.*;
+
 public class Cube extends Mesh {
 
     public Cube(double x, double y, double z, double size) {
+        super("Krychle", "K", Color.WHITE);
 
         double half = size / 2.0;
 

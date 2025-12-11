@@ -10,7 +10,7 @@ public class VivianiCurve extends Mesh {
     private static final int steps = 100;
 
     public VivianiCurve() {
-        super();
+        super("Viviani", "V", Color.ORANGE);
 
         double tStep = 2 * Math.PI / steps;
 
@@ -34,6 +34,5 @@ public class VivianiCurve extends Mesh {
                 indexBuffer.add(i);
             }
         }
-        setColor(Color.YELLOW);
     }
 }

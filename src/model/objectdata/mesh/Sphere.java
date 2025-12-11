@@ -2,6 +2,8 @@ package model.objectdata.mesh;
 
 import transforms.Point3D;
 
+import java.awt.*;
+
 public class Sphere extends Mesh {
 
     /**
@@ -14,6 +16,8 @@ public class Sphere extends Mesh {
      * @param lonSegments počet vertikálních segmentů
      */
     public Sphere(double centerX, double centerY, double centerZ, double radius, int latSegments, int lonSegments) {
+        super("Koule", "U", Color.CYAN);
+
         // generování vrcholů
         for (int i = 0; i <= latSegments; i++) {
             double theta = Math.PI * i / latSegments; // od 0 do PI

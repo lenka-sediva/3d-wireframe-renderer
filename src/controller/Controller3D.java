@@ -12,6 +12,7 @@ import transforms.*;
 import view.Panel;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -74,13 +75,15 @@ public class Controller3D implements Controller {
         objects.add(cube);
         objects.add(pyramid);
         objects.add(sphere);
+        objects.add(torus);
         objects.add(bezier);
         objects.add(coons);
         objects.add(ferguson);
         objects.add(viviani);
-        objects.add(torus);
 
         selectedObject(cube); // krychle je výchozí vybraná
+
+        panel.setObjects(objects); // předání objektů do panelu, aby se vykreslily svou barvou
     }
 
     @Override
@@ -136,12 +139,32 @@ public class Controller3D implements Controller {
                         hardClear();
                         break;
 
-                    // pro rotaci
-                    case KeyEvent.VK_R:
-                        rotationMatrix = new Mat4Rot(Math.toRadians(angle), new Vec3D(0, 0, 1));
+                    // rotace podle osy X
+                    case KeyEvent.VK_X:
+                        rotationMatrix = new Mat4Rot(Math.toRadians(angle), new Vec3D(1, 0, 0));
                         for (Mesh m : objects) {
                             if (m.isSelected()) {
                                 m.setModelMat(m.getModelMat().mul(rotationMatrix)); // přenásobení maticí rotace
+                            }
+                        }
+                        break;
+
+                    // rotace podle osy Y
+                    case KeyEvent.VK_Y:
+                        rotationMatrix = new Mat4Rot(Math.toRadians(angle), new Vec3D(0, 1, 0));
+                        for (Mesh m : objects) {
+                            if (m.isSelected()) {
+                                m.setModelMat(m.getModelMat().mul(rotationMatrix));
+                            }
+                        }
+                        break;
+
+                    // rotace podle osy Z
+                    case KeyEvent.VK_Z:
+                        rotationMatrix = new Mat4Rot(Math.toRadians(angle), new Vec3D(0, 0, 1));
+                        for (Mesh m : objects) {
+                            if (m.isSelected()) {
+                                m.setModelMat(m.getModelMat().mul(rotationMatrix));
                             }
                         }
                         break;
@@ -269,7 +292,7 @@ public class Controller3D implements Controller {
                         panel.setCurrentObject("krychle");
                         break;
 
-                    case KeyEvent.VK_Y:
+                    case KeyEvent.VK_M:
                         selectedObject(pyramid);
                         panel.setCurrentObject("pyramida");
                         break;
@@ -305,7 +328,7 @@ public class Controller3D implements Controller {
                         break;
 
                     // animace v čase = rotace
-                    case KeyEvent.VK_J:
+                    case KeyEvent.VK_R:
                         if (!rotating) {
                             timer.start();
                             rotating = true;
@@ -314,20 +337,43 @@ public class Controller3D implements Controller {
                             rotating = false;
                         }
                         break;
+
+                    // výběr barvy aktuálně vybraného objektu
+                    case KeyEvent.VK_L:
+                        Mesh selected = getSelectedObject();
+                        if (selected != null) {
+                            Color chosen = JColorChooser.showDialog(panel, "Vyber barvu objektu", selected.getColor());
+
+                            if (chosen != null) {
+                                selected.setColor(chosen);
+                                selected.setDefaultColor(chosen); // aktualizace defaultní barvy
+                                renderScene();
+                            }
+                        }
+                        break;
                 }
                 renderScene();
             }
         });
     }
 
+    private Mesh getSelectedObject() {
+        for (Mesh m : objects) {
+            if (m.isSelected()) return m;
+        }
+        return null;
+    }
+
     private void selectedObject(Mesh obj) {
         // zruší výběr předchozích objektů
         for (Mesh m : objects) {
             m.setSelected(false);
+            m.setColor(m.getDefaultColor()); // vrátí výchozí barvu
         }
 
         // označí nový objekt
         obj.setSelected(true);
+        obj.setColor(Color.YELLOW); // zvýrazní vybraný objekt žlutě
     }
 
     // factor = o kolik škáluju

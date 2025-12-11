@@ -2,9 +2,12 @@ package model.objectdata.mesh;
 
 import transforms.Point3D;
 
+import java.awt.*;
+
 public class Triangle extends Mesh {
 
     public Triangle() {
+        super("Trojúhelník", "T", Color.WHITE);
         // body v double
                                 // device/window coordinates
         Point3D p1 = new Point3D(890., 200., 1.);

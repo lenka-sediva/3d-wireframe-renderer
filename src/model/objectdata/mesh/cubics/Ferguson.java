@@ -1,6 +1,7 @@
 package model.objectdata.mesh.cubics;
 
 import model.objectdata.mesh.Mesh;
+import model.objectdata.mesh.Pyramid;
 import transforms.Cubic;
 import transforms.Mat4Identity;
 import transforms.Point3D;
@@ -9,14 +10,16 @@ import java.awt.*;
 
 public class Ferguson extends Mesh {
 
-    public Ferguson() {
-        // 2 koncové body
-        Point3D p0 = new Point3D(-3, -1, -1); // počáteční bod
-        Point3D p1 = new Point3D(-3, 1, 1);   // koncový bod
+    public Ferguson(Pyramid pyramid) {
+        super("Ferguson", "F", Color.MAGENTA);
+
+        // 2 koncové body ve vrcholech pyramidy
+        Point3D p0 = pyramid.getVB().get(0);
+        Point3D p1 = pyramid.getVB().get(4); // horní vrchol
 
         // 2 tečné vektory v koncových bodech
-        Point3D t0 = new Point3D(1, 2, 0);    // tečný vektor na začátku
-        Point3D t1 = new Point3D(1, -2, 0);   // tečný vektor na konci
+        Point3D t0 = new Point3D(0.5, 0, 0.7); // tečný vektor na spodním vrcholu
+        Point3D t1 = new Point3D(-5, 0, -0.5); // tečný vektor na horním vrcholu
 
         Point3D[] points = new Point3D[] {p0, p1, t0, t1};
 
@@ -37,8 +40,10 @@ public class Ferguson extends Mesh {
             getIB().add(i + 1);
         }
 
-        this.setColor(Color.ORANGE);
-
         this.setModelMat(new Mat4Identity());
+    }
+
+    public Ferguson() {
+        this(new Pyramid());
     }
 }

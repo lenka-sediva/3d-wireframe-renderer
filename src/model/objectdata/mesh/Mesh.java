@@ -9,11 +9,29 @@ import java.util.List;
 
 public class Mesh {
 
-    List<Point3D> vertexBuffer = new ArrayList<>();
-    List<Integer> indexBuffer = new ArrayList<>();
-    Mat4 modelMat  = new Mat4Identity(); // jednotková matice, původní stav tělesa
-    Color color = Color.WHITE; // výchozí barva
+    protected List<Point3D> vertexBuffer = new ArrayList<>();
+    protected List<Integer> indexBuffer = new ArrayList<>();
+    private Mat4 modelMat  = new Mat4Identity(); // jednotková matice, původní stav tělesa
+    private final String name;
+    private final String shortcut;
+    private Color color;
+    private Color defaultColor; // původní barva objektu
     boolean isSelected;
+
+    public Mesh(String name, String shortcut, Color defaultColor) {
+        this.name = name;
+        this.shortcut = shortcut;
+        this.defaultColor = defaultColor;
+        this.color = defaultColor;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getShortcut() {
+        return shortcut;
+    }
 
     protected void addIndices(Integer... indices) {
         indexBuffer.addAll(Arrays.asList(indices));
@@ -41,6 +59,14 @@ public class Mesh {
 
     public void setColor(Color color) {
         this.color = color;
+    }
+
+    public Color getDefaultColor() {
+        return defaultColor;
+    }
+
+    public void setDefaultColor(Color defaultColor) {
+        this.defaultColor = defaultColor;
     }
 
     public boolean isSelected() {

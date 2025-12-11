@@ -2,9 +2,12 @@ package model.objectdata.mesh;
 
 import transforms.Point3D;
 
+import java.awt.*;
+
 public class Arrow extends Mesh {
 
     public Arrow() {
+        super("Šipka", "-", Color.WHITE);
         // souřadnice v NDC
         // x <-1, 1>
         // y <-1, 1>
