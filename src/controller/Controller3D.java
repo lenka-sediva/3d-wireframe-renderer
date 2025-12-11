@@ -111,6 +111,10 @@ public class Controller3D implements Controller {
             public void mousePressed(MouseEvent e) {
                 lastMouseX = e.getX();
                 lastMouseY = e.getY();
+
+                Mesh closest = findClosestMesh(lastMouseX, lastMouseY);
+                selectedObject(closest); // označí objekt nejblíž kurzoru myši za vybraný
+                renderScene();
             }
         });
 
@@ -424,6 +428,33 @@ public class Controller3D implements Controller {
             }
             renderScene();
         });
+    }
+
+    // vrací objekt, jehož vrchol je nejblíže zadané pozici (kurzoru myši)
+    private Mesh findClosestMesh(int mouseX, int mouseY) {
+        Mesh closest = null;
+        double minDist = Double.MAX_VALUE;
+
+        for (Mesh mesh : objects) {
+            for (Point3D p : mesh.getVB()) {
+                Point3D pTransformed = p.mul(mesh.getModelMat()).mul(view.getViewMatrix()).mul(proj);
+
+                // dehomogenizace
+                double x = pTransformed.getX() / pTransformed.getW();
+                double y = pTransformed.getY() / pTransformed.getW();
+
+                // transformace do okna
+                double screenX = (x + 1) * (panel.getWidth() - 1) / 2.0;
+                double screenY = panel.getHeight() - (y + 1) * (panel.getHeight() - 1) / 2.0;
+
+                double dist = Math.hypot(mouseX - screenX, mouseY - screenY);
+                if (dist < minDist) {
+                    minDist = dist;
+                    closest = mesh;
+                }
+            }
+        }
+        return closest;
     }
 
     // posílá do seznamu objekty a vyrenderuje je všechny najednou + šipky
