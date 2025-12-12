@@ -8,7 +8,7 @@ import java.awt.*;
 public class VivianiCurve extends Curve {
 
     public VivianiCurve() {
-        super("Viviani", "V", Color.PINK);
+        super("Viviani", "I", Color.PINK);
         generate(50); // výchozí přesnost
     }
 

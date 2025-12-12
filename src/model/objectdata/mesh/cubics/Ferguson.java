@@ -20,10 +20,10 @@ public class Ferguson extends Curve {
 
         // koncové body ve vrcholech pyramidy
         Point3D p0 = pyramid.getVB().get(0);
-        Point3D p1 = pyramid.getVB().get(4);
+        Point3D p1 = pyramid.getVB().get(3);
 
         // tečné vektory v koncových bodech
-        Point3D t0 = new Point3D(0.5, 0, 0.7);
+        Point3D t0 = new Point3D(0.5, 2, 3);
         Point3D t1 = new Point3D(-5, 0, -0.5);
 
         points = new Point3D[]{p0, p1, t0, t1};

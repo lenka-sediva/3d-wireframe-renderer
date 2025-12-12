@@ -8,7 +8,7 @@ public class Cylinder extends Mesh {
     private static final int steps = 50; // počet segmentů kolem kruhu
 
     public Cylinder(double centerX, double centerY, double centerZ, double radius, double height) {
-        super("Válec", "I", Color.CYAN);
+        super("Válec", "V", Color.CYAN);
 
         double halfHeight = height / 2.0;
 

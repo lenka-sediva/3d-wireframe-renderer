@@ -26,17 +26,15 @@ public class Controller3D implements Controller {
     private final List<Mesh> objects = new ArrayList<>();
 
     private Camera view; // pozorovatel
-    private Mat4 proj, orto;
+    private Mat4 persp, ortho;
 
-    private final double angle = 90.d; // uhel
+    private final double angle = 90.d; // úhel
     private final double speed = 0.5; // rychlost pozorovatele
-    private Mat4 rotationMatrix;
 
-    private int lastMouseX, lastMouseY;
+    private int lastMouseX, lastMouseY; // myš
     private boolean dragging = false;
 
-    // pro animaci
-    private Timer timer;
+    private Timer timer; // pro animaci
     private boolean rotating = false;
     private static final int FPS = 60;
 
@@ -53,13 +51,13 @@ public class Controller3D implements Controller {
     public void initObjects() {
         view = new Camera(new Vec3D(0, 0, 0), Math.PI * 1.25, Math.PI * -0.125, 5, false);
 
-        proj = new Mat4PerspRH(Math.toRadians(90), (double) panel.getHeight() / panel.getWidth(), 0.1, 100); // perspektivní matice projekce
-        orto = new Mat4OrthoRH(panel.getWidth() / 100., panel.getHeight() / 100., 0.1, 100); // orotogonální matice projekce
+        persp = new Mat4PerspRH(Math.toRadians(90), (double) panel.getHeight() / panel.getWidth(), 0.1, 100); // perspektivní matice projekce
+        ortho = new Mat4OrthoRH(panel.getWidth() / 100., panel.getHeight() / 100., 0.1, 100); // orotogonální matice projekce
 
         liner = new LineRasterizerBresenham(panel.getRaster());
         renderer3D = new Renderer3D(liner, panel);
         renderer3D.setView(view.getViewMatrix()); // získáme pohledovou matici
-        renderer3D.setProj(proj); // matice projekce
+        renderer3D.setProj(persp); // matice projekce
 
         cube = new Cube();
         axis = new Axis();
@@ -82,8 +80,7 @@ public class Controller3D implements Controller {
         objects.add(ferguson);
         objects.add(viviani);
 
-        selectedObject(cube); // krychle je výchozí vybraná
-
+        setSelectedObject(cube); // krychle je výchozí vybraná
         panel.setObjects(objects); // předání objektů do panelu, aby se vykreslily svou barvou
     }
 
@@ -97,10 +94,10 @@ public class Controller3D implements Controller {
                 panel.setRaster(newRaster);
                 liner.setRaster(newRaster);
 
-                proj = new Mat4PerspRH(Math.toRadians(90), (double) panel.getHeight() / panel.getWidth(), 0.1, 100);
-                orto = new Mat4OrthoRH(panel.getWidth() / 100.0, panel.getHeight() / 100.0, 0.1, 100);
+                persp = new Mat4PerspRH(Math.toRadians(90), (double) panel.getHeight() / panel.getWidth(), 0.1, 100);
+                ortho = new Mat4OrthoRH(panel.getWidth() / 100.0, panel.getHeight() / 100.0, 0.1, 100);
 
-                renderer3D.setProj(proj);
+                renderer3D.setProj(persp);
                 renderScene();
             }
         });
@@ -118,7 +115,7 @@ public class Controller3D implements Controller {
                 if (!dragging) {
                     // vybere objekt, pokud během držení myši nedošlo k dragování
                     Mesh closest = findClosestMesh(lastMouseX, lastMouseY);
-                    selectedObject(closest); // označí objekt nejblíž kurzoru myši za vybraný
+                    setSelectedObject(closest); // označí objekt nejblíž kurzoru myši za vybraný
                     renderScene();
                 }
             }
@@ -148,75 +145,44 @@ public class Controller3D implements Controller {
             @Override
             public void keyPressed(KeyEvent e) {
                 switch (e.getKeyCode()) {
-                    // vymazání plátna
+                    // vymazání plátna kromě os XYZ
                     case KeyEvent.VK_C:
                         hardClear();
                         break;
 
                     // rotace podle osy X
                     case KeyEvent.VK_X:
-                        rotationMatrix = new Mat4Rot(Math.toRadians(angle), new Vec3D(1, 0, 0));
-                        for (Mesh m : objects) {
-                            if (m.isSelected()) {
-                                m.setModelMat(m.getModelMat().mul(rotationMatrix)); // přenásobení maticí rotace
-                            }
-                        }
+                        transformSelected(new Mat4Rot(Math.toRadians(angle), new Vec3D(1, 0, 0))); // přenásobení maticí rotace
                         break;
 
                     // rotace podle osy Y
                     case KeyEvent.VK_Y:
-                        rotationMatrix = new Mat4Rot(Math.toRadians(angle), new Vec3D(0, 1, 0));
-                        for (Mesh m : objects) {
-                            if (m.isSelected()) {
-                                m.setModelMat(m.getModelMat().mul(rotationMatrix));
-                            }
-                        }
+                        transformSelected(new Mat4Rot(Math.toRadians(angle), new Vec3D(0, 1, 0)));
                         break;
 
                     // rotace podle osy Z
                     case KeyEvent.VK_Z:
-                        rotationMatrix = new Mat4Rot(Math.toRadians(angle), new Vec3D(0, 0, 1));
-                        for (Mesh m : objects) {
-                            if (m.isSelected()) {
-                                m.setModelMat(m.getModelMat().mul(rotationMatrix));
-                            }
-                        }
+                        transformSelected(new Mat4Rot(Math.toRadians(angle), new Vec3D(0, 0, 1)));
                         break;
 
                     // translace (posunutí) vlevo
                     case KeyEvent.VK_LEFT:
-                        for (Mesh m : objects) {
-                            if (m.isSelected()) {
-                                m.setModelMat(m.getModelMat().mul(new Mat4Transl(-0.1, 0, 0))); // přenásobení maticí translace
-                            }
-                        }
+                        moveSelected(-0.1, 0);
                         break;
 
                     // translace (posunutí) vpravo
                     case KeyEvent.VK_RIGHT:
-                        for (Mesh m : objects) {
-                            if (m.isSelected()) {
-                                m.setModelMat(m.getModelMat().mul(new Mat4Transl(0.1, 0, 0)));
-                            }
-                        }
+                        moveSelected(0.1, 0);
                         break;
 
                     // nahoru
                     case KeyEvent.VK_UP:
-                        for (Mesh m : objects) {
-                            if (m.isSelected()) {
-                                m.setModelMat(m.getModelMat().mul(new Mat4Transl(0, 0.1, 0)));
-                            }
-                        }
+                        moveSelected(0, 0.1);
                         break;
 
                     // dolů
                     case KeyEvent.VK_DOWN:
-                        for (Mesh m : objects) {
-                            if (m.isSelected()) {
-                                m.setModelMat(m.getModelMat().mul(new Mat4Transl(0, -0.1, 0)));
-                            }
-                        }
+                        moveSelected(0, -0.1);
                         break;
 
                     // změna měřítka (scale)
@@ -240,8 +206,8 @@ public class Controller3D implements Controller {
 
                     // vrácení objektů zpátky
                     case KeyEvent.VK_O:
-                        for (Mesh object : objects) {
-                            object.setModelMat(new Mat4Identity());
+                        for (Mesh m : objects) {
+                            m.setModelMat(new Mat4Identity());
                         }
                         break;
 
@@ -292,58 +258,49 @@ public class Controller3D implements Controller {
 
                     // perspektivní projekce (výchozí) = vzdálenější objekty se jeví menší
                     case KeyEvent.VK_P:
-                        renderer3D.setProj(proj);
+                        renderer3D.setProj(persp);
                         break;
 
-                    // orto projekce
+                    // ortogonální projekce (pravoúhlá) = vzdálenost od kamery nemění velikost objektu
                     case KeyEvent.VK_H:
-                        renderer3D.setProj(orto);
+                        renderer3D.setProj(ortho);
                         break;
 
                     // vybrání objektů
                     case KeyEvent.VK_K:
-                        selectedObject(cube);
-                        panel.setCurrentObject("krychle");
+                        select(cube, "krychle");
                         break;
 
                     case KeyEvent.VK_M:
-                        selectedObject(pyramid);
-                        panel.setCurrentObject("pyramida");
+                        select(pyramid, "pyramida");
                         break;
 
                     case KeyEvent.VK_U:
-                        selectedObject(sphere);
-                        panel.setCurrentObject("koule");
+                        select(sphere, "koule");
                         break;
 
                     case KeyEvent.VK_B:
-                        selectedObject(bezier);
-                        panel.setCurrentObject("bezier");
+                        select(bezier, "bezier");
                         break;
 
                     case KeyEvent.VK_N:
-                        selectedObject(coons);
-                        panel.setCurrentObject("coons");
+                        select(coons, "coons");
                         break;
 
                     case KeyEvent.VK_F:
-                        selectedObject(ferguson);
-                        panel.setCurrentObject("ferguson");
+                        select(ferguson, "ferguson");
                         break;
 
                     case KeyEvent.VK_T:
-                        selectedObject(torus);
-                        panel.setCurrentObject("torus");
-                        break;
-
-                    case KeyEvent.VK_V:
-                        selectedObject(viviani);
-                        panel.setCurrentObject("viviani");
+                        select(torus, "torus");
                         break;
 
                     case KeyEvent.VK_I:
-                        selectedObject(cylinder);
-                        panel.setCurrentObject("válec");
+                        select(viviani, "viviani");
+                        break;
+
+                    case KeyEvent.VK_V:
+                        select(cylinder, "válec");
                         break;
 
                     // animace v čase = rotace
@@ -376,7 +333,7 @@ public class Controller3D implements Controller {
         });
 
         // listener pro slider přesnosti křivek
-        panel.getPrecisionSlider().addChangeListener(e -> {
+        panel.getPrecisionSlider().addChangeListener(_ -> {
             int precision = panel.getPrecision();
             for (Mesh m : objects) {
                 if (m instanceof Curve curve) {
@@ -385,7 +342,7 @@ public class Controller3D implements Controller {
                     curve.setModelMat(currentMat); // obnoví transformaci
                 }
             }
-            renderScene(); // překreslí scénu
+            renderScene();
             panel.requestFocusInWindow(); // vrátí focus panelu, aby KeyListener opět fungoval
         });
     }
@@ -397,7 +354,7 @@ public class Controller3D implements Controller {
         return null;
     }
 
-    private void selectedObject(Mesh obj) {
+    private void setSelectedObject(Mesh obj) {
         // zruší výběr předchozích objektů
         for (Mesh m : objects) {
             m.setSelected(false);
@@ -407,6 +364,25 @@ public class Controller3D implements Controller {
         // označí nový objekt
         obj.setSelected(true);
         obj.setColor(Color.YELLOW); // zvýrazní vybraný objekt žlutě
+    }
+
+    // pomocná metoda, aplikuje transformaci na vybraný objekt
+    private void transformSelected(Mat4 transform) {
+        Mesh sel = getSelectedObject();
+        if (sel != null) {
+            sel.setModelMat(sel.getModelMat().mul(transform));
+        }
+    }
+
+    // posune vybraný objekt o zadané souřadnice
+    private void moveSelected(double x, double y) {
+        transformSelected(new Mat4Transl(x, y, 0));
+    }
+
+    // vybere objekt a předá jeho název do panelu
+    private void select(Mesh obj, String name) {
+        setSelectedObject(obj);
+        panel.setCurrentObject(name);
     }
 
     // factor = o kolik škáluju
@@ -443,9 +419,9 @@ public class Controller3D implements Controller {
         Mesh closest = null;
         double minDist = Double.MAX_VALUE;
 
-        for (Mesh mesh : objects) {
-            for (Point3D p : mesh.getVB()) {
-                Point3D pTransformed = p.mul(mesh.getModelMat()).mul(view.getViewMatrix()).mul(proj);
+        for (Mesh m : objects) {
+            for (Point3D p : m.getVB()) {
+                Point3D pTransformed = p.mul(m.getModelMat()).mul(view.getViewMatrix()).mul(persp);
 
                 // dehomogenizace
                 double x = pTransformed.getX() / pTransformed.getW();
@@ -458,7 +434,7 @@ public class Controller3D implements Controller {
                 double dist = Math.hypot(mouseX - screenX, mouseY - screenY);
                 if (dist < minDist) {
                     minDist = dist;
-                    closest = mesh;
+                    closest = m;
                 }
             }
         }
@@ -473,8 +449,8 @@ public class Controller3D implements Controller {
         renderer3D.render(axis.yAxis);
         renderer3D.render(axis.zAxis);
 
-        for(Mesh mesh : objects) {
-            renderer3D.render(mesh);
+        for(Mesh m : objects) {
+            renderer3D.render(m);
         }
 
         panel.repaint();
@@ -483,8 +459,8 @@ public class Controller3D implements Controller {
     private void hardClear() {
         panel.clear();
 
-        for(Mesh object : objects) {
-            object.setModelMat(new Mat4());
+        for(Mesh m : objects) {
+            m.setModelMat(new Mat4());
         }
 
         renderScene();
