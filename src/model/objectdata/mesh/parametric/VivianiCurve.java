@@ -9,36 +9,27 @@ public class VivianiCurve extends Curve {
 
     public VivianiCurve() {
         super("Viviani", "I", Color.PINK);
-        generate(50); // výchozí přesnost
+        generate(50); // výchozí přesnost (počet bodů tvořících křivku)
     }
 
     @Override
     public void generate(int precision) {
-        // vyčistí staré body
-        getVB().clear();
-        getIB().clear();
 
-        double tStep = 2 * Math.PI / precision;
+        buildCurveVerticesAndIndices(t -> {
+            // t je v rozsahu [0, 1], převedeme ho na interval [-π/2, 3π/2]
+            double angle = -Math.PI / 2 + t * (2 * Math.PI);
 
-        for (int i = 0; i <= precision; i++) {
-            double t = -Math.PI / 2 + i * tStep; // úhel
+            // parametrická rovnice
+            double x = Math.cos(angle) * Math.cos(angle);
+            double y = Math.cos(angle) * Math.sin(angle);
+            double z = Math.sin(angle);
 
-            // parametrická Vivianiho křivka
-            double x = Math.cos(t) * Math.cos(t);
-            double y = Math.cos(t) * Math.sin(t);
-            double z = Math.sin(t);
-
-            // škálování do krychle [-0.5,0.5]
+            // škálování do krychle
             x = x - 0.5;
             y = y / 2;
             z = z / 2;
 
-            getVB().add(new Point3D(x, y, z));
-
-            if (i > 0) {
-                getIB().add(i - 1);
-                getIB().add(i);
-            }
-        }
+            return new Point3D(x, y, z);
+        }, precision);
     }
 }

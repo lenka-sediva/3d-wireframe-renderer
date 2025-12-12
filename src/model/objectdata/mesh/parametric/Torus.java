@@ -22,18 +22,19 @@ public class Torus extends Mesh {
 
         // generování bodů
         for (int i = 0; i <= uSteps; i++) {
-            double u = 2 * Math.PI * i / uSteps;
+            double u = 2 * Math.PI * i / uSteps; // úhel kolem hlavního kruhu
 
             for (int j = 0; j <= vSteps; j++) {
-                double v = 2 * Math.PI * j / vSteps;
+                double v = 2 * Math.PI * j / vSteps; // úhel kolem průřezu
 
+                // paramterická rovnice
                 double x = centerX + (R + r * Math.cos(v)) * Math.cos(u);
                 double y = centerY + (R + r * Math.cos(v)) * Math.sin(u);
                 double z = centerZ + r * Math.sin(v);
 
                 vertexBuffer.add(new Point3D(x, y, z));
 
-                // hrana v rámci malého kruhu
+                // spojení bodů v rámci malého kruhu
                 if (j > 0) {
                     int current = i * (vSteps + 1) + j;
                     int prev = current - 1;
@@ -41,7 +42,7 @@ public class Torus extends Mesh {
                     indexBuffer.add(current);
                 }
 
-                // hrana v rámci velkého kruhu
+                // spojení bodů v rámci velkého kruhu
                 if (i > 0 && j > 0) {
                     int current = i * (vSteps + 1) + j;
                     int prevU = (i - 1) * (vSteps + 1) + j;

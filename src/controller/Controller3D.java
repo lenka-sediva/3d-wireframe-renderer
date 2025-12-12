@@ -52,11 +52,11 @@ public class Controller3D implements Controller {
         view = new Camera(new Vec3D(0, 0, 0), Math.PI * 1.25, Math.PI * -0.125, 5, false);
 
         persp = new Mat4PerspRH(Math.toRadians(90), (double) panel.getHeight() / panel.getWidth(), 0.1, 100); // perspektivní matice projekce
-        ortho = new Mat4OrthoRH(panel.getWidth() / 100., panel.getHeight() / 100., 0.1, 100); // orotogonální matice projekce
+        ortho = new Mat4OrthoRH(panel.getWidth() / 100., panel.getHeight() / 100., 0.1, 100); // ortogonální matice projekce
 
         liner = new LineRasterizerBresenham(panel.getRaster());
         renderer3D = new Renderer3D(liner, panel);
-        renderer3D.setView(view.getViewMatrix()); // získáme pohledovou matici
+        renderer3D.setView(view.getViewMatrix()); // pohledová matice
         renderer3D.setProj(persp); // matice projekce
 
         cube = new Cube();
@@ -204,7 +204,7 @@ public class Controller3D implements Controller {
                         }
                         break;
 
-                    // vrácení objektů zpátky
+                    // vrácení objektů zpátky do původního stavu
                     case KeyEvent.VK_O:
                         for (Mesh m : objects) {
                             m.setModelMat(new Mat4Identity());
@@ -393,8 +393,8 @@ public class Controller3D implements Controller {
         panel.setCurrentObject(name);
     }
 
-    // factor = o kolik škáluju
-    private void scale(Mesh m, double factor) {
+    // změna měřítka
+    private void scale(Mesh m, double factor) { // factor = o kolik škáluju
         Vec3D c = m.getCenter();
         m.setModelMat(
                 new Mat4Transl(c.opposite()) // opposite = záporné souřadnice
@@ -439,7 +439,7 @@ public class Controller3D implements Controller {
                 double screenX = (x + 1) * (panel.getWidth() - 1) / 2.0;
                 double screenY = panel.getHeight() - (y + 1) * (panel.getHeight() - 1) / 2.0;
 
-                double dist = Math.hypot(mouseX - screenX, mouseY - screenY);
+                double dist = Math.hypot(mouseX - screenX, mouseY - screenY); // počítá euklidovskou vzdálenost
                 if (dist < minDist) {
                     minDist = dist;
                     closest = m;
