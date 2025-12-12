@@ -1,6 +1,5 @@
-package model.objectdata.mesh.parametric;
+package model.objectdata.mesh;
 
-import model.objectdata.mesh.Mesh;
 import transforms.Point3D;
 
 import java.awt.*;

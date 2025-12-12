@@ -1,6 +1,5 @@
 package model.objectdata.mesh.cubics;
 
-import model.objectdata.mesh.Curve;
 import model.objectdata.mesh.Pyramid;
 import transforms.Cubic;
 import transforms.Point3D;

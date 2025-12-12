@@ -1,7 +1,6 @@
 package model.objectdata.mesh.cubics;
 
 import model.objectdata.mesh.Cube;
-import model.objectdata.mesh.Curve;
 import transforms.Cubic;
 import transforms.Point3D;
 

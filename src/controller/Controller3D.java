@@ -2,7 +2,6 @@ package controller;
 
 import model.objectdata.mesh.cubics.*;
 import model.objectdata.mesh.*;
-import model.objectdata.mesh.parametric.*;
 import model.rasterdata.RasterBI;
 import model.rasterops.rasterizer.*;
 import model.rasterops.renderer.Renderer3D;

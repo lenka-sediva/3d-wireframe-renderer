@@ -1,5 +1,6 @@
-package model.objectdata.mesh;
+package model.objectdata.mesh.cubics;
 
+import model.objectdata.mesh.Mesh;
 import transforms.Mat4Identity;
 import transforms.Point3D;
 

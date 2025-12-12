@@ -1,6 +1,5 @@
-package model.objectdata.mesh.parametric;
+package model.objectdata.mesh.cubics;
 
-import model.objectdata.mesh.Curve;
 import transforms.Point3D;
 
 import java.awt.*;
