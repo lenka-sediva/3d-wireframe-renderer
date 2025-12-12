@@ -13,6 +13,7 @@ public class Panel extends JPanel {
     private Raster raster;
     private String currentObjectName = "krychle";
     private List<Mesh> objects; // seznam všech objektů
+    private String currentCameraMode = "3. osoba"; // výchozí
     private final JSlider precisionSlider; // slider pro přesnost křivek
     private final JLabel sliderLabel; // popisek nad sliderem
 
@@ -88,6 +89,7 @@ public class Panel extends JPanel {
         g.drawString("[WASD] pohyb", getWidth() - 120, 50);
         g.drawString("[Q] vlevo, [E] vpravo", getWidth() - 160, 75);
         g.drawString("[SHIFT] nahoru, [CTRL] dolů", getWidth() - 225, 100);
+        g.drawString(currentCameraMode + " [MEZERNÍK]", getWidth() - 170, 125);
     }
 
     public void setCurrentObject(String name) {
@@ -97,6 +99,11 @@ public class Panel extends JPanel {
 
     public void setObjects(List<Mesh> objects) {
         this.objects = objects;
+        repaint();
+    }
+
+    public void setCurrentCameraMode(boolean firstPerson) {
+        this.currentCameraMode = firstPerson ? "1. osoba" : "3. osoba";
         repaint();
     }
 

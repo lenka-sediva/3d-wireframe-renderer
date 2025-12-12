@@ -327,6 +327,14 @@ public class Controller3D implements Controller {
                             }
                         }
                         break;
+
+                    // změna pohledu kamery = 1. a 3. osoba
+                    case KeyEvent.VK_SPACE:
+                        view = view.withFirstPerson(!view.getFirstPerson()); // přepíná mezi režimy
+                        panel.setCurrentCameraMode(view.getFirstPerson()); // aktualizace panelu
+                        renderer3D.setView(view.getViewMatrix());
+                        renderScene();
+                        break;
                 }
                 renderScene();
             }
