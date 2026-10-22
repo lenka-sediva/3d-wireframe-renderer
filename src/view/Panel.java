@@ -11,9 +11,9 @@ import java.util.List;
 public class Panel extends JPanel {
 
     private Raster raster;
-    private String currentObjectName = "krychle";
+    private String currentObjectName = "cube";
     private List<Mesh> objects; // seznam všech objektů
-    private String currentCameraMode = "3. osoba"; // výchozí
+    private String currentCameraMode = "3rd person"; // výchozí
     private final JSlider precisionSlider; // slider pro přesnost křivek
     private final JLabel sliderLabel; // popisek nad sliderem
 
@@ -27,7 +27,7 @@ public class Panel extends JPanel {
         add(precisionSlider);
 
         // popisek nad sliderem
-        sliderLabel = new JLabel("Přesnost vykreslení křivek", SwingConstants.CENTER);
+        sliderLabel = new JLabel("Curve rendering precision", SwingConstants.CENTER);
         sliderLabel.setForeground(Color.WHITE);
         sliderLabel.setFont(new Font("SansSerif", Font.BOLD, 16));
         add(sliderLabel);
@@ -58,16 +58,17 @@ public class Panel extends JPanel {
 
         // levý dolní roh = nápověda
         g.setColor(Color.ORANGE);
-        g.drawString("Nápověda:", 10, getHeight() - 160);
+        g.drawString("Help:", 10, getHeight() - 160);
         g.setColor(Color.WHITE);
-        g.drawString("[šipky] posun objektu", 10, getHeight() - 135);
-        g.drawString("[L] změna barvy objektu", 10, getHeight() - 110);
-        g.drawString("[R] animace rotace objektu v čase", 10, getHeight() - 85);
-        g.drawString("[+] zvětšení objektu, [-] zmenšení objektu", 10, getHeight() - 60);
-        g.drawString("[C] smazání, [O] původní stav, [XYZ] rotace podle os", 10, getHeight() - 35);
-        g.drawString("Aktuálně vybraný objekt: ", 10, getHeight() - 10);
+        g.drawString("[arrows] move object", 10, getHeight() - 135);
+        g.drawString("[L] change object color", 10, getHeight() - 110);
+        g.drawString("[R] animate object rotation", 10, getHeight() - 85);
+        g.drawString("[+] scale object up, [-] scale object down", 10, getHeight() - 60);
+        g.drawString("[C] clear, [O] reset, [XYZ] rotate around axes", 10, getHeight() - 35);
+        String selectedLabel = "Selected object: ";
+        g.drawString(selectedLabel, 10, getHeight() - 10);
         g.setColor(Color.ORANGE);
-        g.drawString(currentObjectName, 205, getHeight() - 10);
+        g.drawString(currentObjectName, 10 + g.getFontMetrics().stringWidth(selectedLabel), getHeight() - 10);
 
         // levý horní roh = seznam objektů s jejich vlastní barvou
         int y = 25;
@@ -79,17 +80,23 @@ public class Panel extends JPanel {
 
         // pravý dolní roh = projekce
         g.setColor(Color.WHITE);
-        g.drawString("Ortogonální projekce [H]", getWidth() - 195, getHeight() - 35);
-        g.drawString("Perspektivní projekce [P]", getWidth() - 200, getHeight() - 10);
+        drawStringRight(g, "Orthographic projection [H]", getHeight() - 35);
+        drawStringRight(g, "Perspective projection [P]", getHeight() - 10);
 
         // pravý horní roh = pozorovatel
         g.setColor(Color.ORANGE);
-        g.drawString("Pozorovatel:", getWidth() - 105, 25);
+        drawStringRight(g, "Observer:", 25);
         g.setColor(Color.WHITE);
-        g.drawString("[WASD] pohyb", getWidth() - 120, 50);
-        g.drawString("[Q] vlevo, [E] vpravo", getWidth() - 160, 75);
-        g.drawString("[SHIFT] nahoru, [CTRL] dolů", getWidth() - 225, 100);
-        g.drawString(currentCameraMode + " [MEZERNÍK]", getWidth() - 170, 125);
+        drawStringRight(g, "[WASD] move", 50);
+        drawStringRight(g, "[Q] left, [E] right", 75);
+        drawStringRight(g, "[SHIFT] up, [CTRL] down", 100);
+        drawStringRight(g, currentCameraMode + " [SPACE]", 125);
+    }
+
+    // vykreslí text zarovnaný k pravému okraji panelu
+    private void drawStringRight(Graphics g, String text, int y) {
+        int width = g.getFontMetrics().stringWidth(text);
+        g.drawString(text, getWidth() - width - 10, y);
     }
 
     public void setCurrentObject(String name) {
@@ -103,7 +110,7 @@ public class Panel extends JPanel {
     }
 
     public void setCurrentCameraMode(boolean firstPerson) {
-        this.currentCameraMode = firstPerson ? "1. osoba" : "3. osoba";
+        this.currentCameraMode = firstPerson ? "1st person" : "3rd person";
         repaint();
     }
 

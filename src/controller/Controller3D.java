@@ -267,15 +267,15 @@ public class Controller3D implements Controller {
 
                     // vybrání objektů
                     case KeyEvent.VK_K:
-                        select(cube, "krychle");
+                        select(cube, "cube");
                         break;
 
                     case KeyEvent.VK_M:
-                        select(pyramid, "pyramida");
+                        select(pyramid, "pyramid");
                         break;
 
                     case KeyEvent.VK_U:
-                        select(sphere, "koule");
+                        select(sphere, "sphere");
                         break;
 
                     case KeyEvent.VK_B:
@@ -299,7 +299,7 @@ public class Controller3D implements Controller {
                         break;
 
                     case KeyEvent.VK_V:
-                        select(cylinder, "válec");
+                        select(cylinder, "cylinder");
                         break;
 
                     // animace v čase = rotace
@@ -317,7 +317,7 @@ public class Controller3D implements Controller {
                     case KeyEvent.VK_L:
                         Mesh selected = getSelectedObject();
                         if (selected != null) {
-                            Color chosen = JColorChooser.showDialog(panel, "Vyber barvu objektu", selected.getColor());
+                            Color chosen = JColorChooser.showDialog(panel, "Choose object color", selected.getColor());
 
                             if (chosen != null) {
                                 selected.setColor(chosen);

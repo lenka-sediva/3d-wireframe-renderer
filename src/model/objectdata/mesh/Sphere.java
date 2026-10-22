@@ -7,7 +7,7 @@ import java.awt.*;
 public class Sphere extends Mesh {
 
     public Sphere(double centerX, double centerY, double centerZ, double radius, int latSegments, int lonSegments) {
-        super("Koule", "U", Color.CYAN);
+        super("Sphere", "U", Color.CYAN);
 
         // generování vrcholů
         for (int i = 0; i <= latSegments; i++) {

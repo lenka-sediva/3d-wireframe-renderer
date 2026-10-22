@@ -6,7 +6,7 @@ import java.awt.*;
 
 public class ArrowZ extends Mesh {
     public ArrowZ() {
-        super("Šipka", "-", Color.WHITE);
+        super("Arrow", "-", Color.WHITE);
 
         Point3D p1 = new Point3D(0, 0, 0);
         Point3D p2 = new Point3D(0, 0, 0.8);

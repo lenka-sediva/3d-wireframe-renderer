@@ -7,7 +7,7 @@ import java.awt.*;
 public class ArrowX extends Mesh {
 
     public ArrowX() {
-        super("Šipka", "-", Color.WHITE);
+        super("Arrow", "-", Color.WHITE);
         // souřadnice v NDC
         // x <-1, 1>
         // y <-1, 1>

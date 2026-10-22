@@ -7,7 +7,7 @@ import java.awt.*;
 public class Pyramid extends Mesh {
 
     public Pyramid(double x, double y, double z, double size) {
-        super("Pyramida", "M", Color.WHITE);
+        super("Pyramid", "M", Color.WHITE);
 
         double half = size / 2.0;
 
