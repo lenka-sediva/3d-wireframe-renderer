@@ -131,3 +131,10 @@ The view matrix is computed by the `Camera` class (azimuth, zenith, position, fi
 
 - Java Swing / AWT
 - the `transforms` package by PGRF FIM UHK (matrices, vectors, camera, cubics)
+
+## License
+
+The original code of this project is licensed under the [MIT License](LICENSE).
+
+The `src/transforms/` package is not covered by this license. It was provided by PGRF FIM UHK
+as course material and remains the property of its authors.
