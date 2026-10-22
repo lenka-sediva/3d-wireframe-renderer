@@ -1,133 +1,133 @@
-# 3D drátový renderer – PGRF1 2025, úloha 3
+# 3D Wireframe Renderer – PGRF1 2025, Assignment 3
 
-![Ukázka aplikace](docs/images/screenshot.png)
+![Application screenshot](docs/images/screenshot.png)
 
-Desktopová aplikace v Javě (Swing), která vykresluje drátové (wireframe) modely 3D těles a kubických křivek.
-Celá grafická pipeline je napsaná ručně: od modelovací, pohledové a projekční transformace přes ořezání
-v homogenních souřadnicích a dehomogenizaci až po rasterizaci úseček Bresenhamovým algoritmem do `BufferedImage`.
-Projekt je postavený podle architektury **MVC** (Model – View – Controller).
+A Java (Swing) desktop application that renders wireframe models of 3D solids and cubic curves.
+The entire graphics pipeline is written by hand: from the model, view and projection transformations, through clipping
+in homogeneous coordinates and dehomogenization, to line rasterization with Bresenham's algorithm into a `BufferedImage`.
+The project follows the **MVC** (Model – View – Controller) architecture.
 
-Autorka: Lenka Šedivá
+Author: Lenka Šedivá
 
-## Funkce
+## Features
 
-- **Tělesa:** krychle, pyramida, koule, torus, válec
-- **Kubické křivky:** Bézierova, Coonsova, Fergusonova a parametrická Vivianiho křivka
-- **Osy X, Y, Z** jako barevné šipky (červená, zelená, modrá), na které se nepoužívá modelovací transformace
-- **Transformace vybraného objektu:** posun, rotace kolem os X/Y/Z, změna měřítka kolem středu objektu
-- **Animace:** průběžná rotace vybraného objektu (60 FPS)
-- **Kamera:** pohyb pozorovatele, otáčení myší, přepínání mezi 1. a 3. osobou
-- **Projekce:** perspektivní a ortogonální
-- **Výběr objektu** klávesou nebo kliknutím myší (vybere se objekt, jehož vrchol je nejblíž kurzoru); vybraný objekt se zvýrazní žlutě
-- **Změna barvy** objektu přes dialog `JColorChooser`
-- **Posuvník přesnosti křivek:** počet bodů, ze kterých se křivky skládají (10–300)
+- **Solids:** cube, pyramid, sphere, torus, cylinder
+- **Cubic curves:** Bézier, Coons, Ferguson and the parametric Viviani curve
+- **X, Y, Z axes** drawn as colored arrows (red, green, blue), unaffected by the model transformation
+- **Transformations of the selected object:** translation, rotation around the X/Y/Z axes, scaling around the object's center
+- **Animation:** continuous rotation of the selected object (60 FPS)
+- **Camera:** observer movement, mouse look, switching between first-person and third-person view
+- **Projection:** perspective and orthographic
+- **Object selection** by key or by mouse click (selects the object whose vertex is closest to the cursor); the selected object is highlighted in yellow
+- **Color change** of an object via a `JColorChooser` dialog
+- **Curve precision slider:** number of points the curves are made of (10–300)
 
-## Ovládání
+## Controls
 
-### Výběr objektu
+### Object selection
 
-| Klávesa | Objekt |
+| Key | Object |
 |---|---|
-| `K` | krychle |
-| `M` | pyramida |
-| `U` | koule |
+| `K` | cube |
+| `M` | pyramid |
+| `U` | sphere |
 | `T` | torus |
-| `V` | válec |
-| `B` | Bézierova křivka |
-| `N` | Coonsova křivka |
-| `F` | Fergusonova křivka |
-| `I` | Vivianiho křivka |
-| levé tlačítko myši | objekt nejblíže kurzoru |
+| `V` | cylinder |
+| `B` | Bézier curve |
+| `N` | Coons curve |
+| `F` | Ferguson curve |
+| `I` | Viviani curve |
+| left mouse button | object closest to the cursor |
 
-### Práce s vybraným objektem
+### Working with the selected object
 
-| Klávesa | Akce |
+| Key | Action |
 |---|---|
-| šipky | posun |
-| `X` / `Y` / `Z` | rotace o 90° kolem osy X / Y / Z |
-| `+` / `-` | zvětšení / zmenšení |
-| `R` | zapnutí / vypnutí animace rotace |
-| `L` | změna barvy |
-| `O` | vrácení všech objektů do původního stavu |
-| `C` | smazání plátna (osy zůstanou) |
+| arrow keys | translate |
+| `X` / `Y` / `Z` | rotate 90° around the X / Y / Z axis |
+| `+` / `-` | scale up / down |
+| `R` | toggle rotation animation |
+| `L` | change color |
+| `O` | reset all objects to their initial state |
+| `C` | clear the canvas (axes remain) |
 
-### Kamera a projekce
+### Camera and projection
 
-| Klávesa | Akce |
+| Key | Action |
 |---|---|
-| `W` `A` `S` `D` | pohyb pozorovatele |
-| `Q` / `E` | natočení kamery vlevo / vpravo |
-| `Shift` / `Ctrl` | pohyb nahoru / dolů |
-| tažení myší | otáčení kamery |
-| `Mezerník` | přepnutí mezi 1. a 3. osobou |
-| `P` | perspektivní projekce (výchozí) |
-| `H` | ortogonální projekce |
+| `W` `A` `S` `D` | move the observer |
+| `Q` / `E` | turn the camera left / right |
+| `Shift` / `Ctrl` | move up / down |
+| mouse drag | rotate the camera |
+| `Space` | switch between first-person and third-person view |
+| `P` | perspective projection (default) |
+| `H` | orthographic projection |
 
-Nápověda ke všem klávesám se zobrazuje i přímo v okně aplikace.
+A help overlay listing all keys is also shown directly in the application window.
 
-## Spuštění
+## Running
 
-Požadavky: **JDK 22 nebo novější** (kód používá nepojmenované proměnné `_` v lambdách).
+Requirements: **JDK 22 or newer** (the code uses unnamed variables `_` in lambdas).
 
 ### IntelliJ IDEA
 
-Otevřete složku projektu, nastavte SDK na JDK 22+ a spusťte třídu `App`.
+Open the project folder, set the SDK to JDK 22+ and run the `App` class.
 
-### Příkazová řádka
+### Command line
 
 ```bash
 javac -d out $(find src -name "*.java")
 java -cp out App
 ```
 
-## Struktura projektu
+## Project structure
 
 ```
 src/
-├── App.java                      vstupní bod, vytvoří okno a controller
+├── App.java                      entry point, creates the window and the controller
 ├── controller/
-│   ├── Controller.java           rozhraní controlleru
-│   └── Controller3D.java         scéna, ovládání klávesnicí a myší, animace
+│   ├── Controller.java           controller interface
+│   └── Controller3D.java         scene, keyboard and mouse controls, animation
 ├── model/
 │   ├── objectdata/
-│   │   ├── Line.java             úsečka ve 2D
+│   │   ├── Line.java             2D line segment
 │   │   └── mesh/
-│   │       ├── Mesh.java         základní třída tělesa (vertex buffer, index buffer, modelovací matice)
+│   │       ├── Mesh.java         base solid class (vertex buffer, index buffer, model matrix)
 │   │       ├── Cube, Pyramid, Sphere, Torus, Cylinder
-│   │       ├── Axis, ArrowX/Y/Z  osy souřadného systému
+│   │       ├── Axis, ArrowX/Y/Z  coordinate system axes
 │   │       └── cubics/
-│   │           ├── Curve.java    abstraktní křivka, generuje body podle přesnosti
+│   │           ├── Curve.java    abstract curve, generates points based on precision
 │   │           └── Bezier, Coons, Ferguson, VivianiCurve
 │   ├── rasterdata/
-│   │   ├── Raster.java           rozhraní rastru
-│   │   └── RasterBI.java         raster nad BufferedImage
+│   │   ├── Raster.java           raster interface
+│   │   └── RasterBI.java         raster backed by BufferedImage
 │   └── rasterops/
 │       ├── rasterizer/
 │       │   ├── LineRasterizer.java
 │       │   └── LineRasterizerBresenham.java
 │       └── renderer/
-│           └── Renderer3D.java   grafická pipeline
-├── transforms/                   knihovna pro vektory, matice, kameru a kubiky (PGRF FIM UHK)
+│           └── Renderer3D.java   graphics pipeline
+├── transforms/                   library for vectors, matrices, camera and cubics (PGRF FIM UHK)
 └── view/
-    ├── Window.java               hlavní okno (JFrame)
-    └── Panel.java                kreslicí plocha, nápověda, posuvník přesnosti
+    ├── Window.java               main window (JFrame)
+    └── Panel.java                drawing canvas, help overlay, precision slider
 ```
 
-## Grafická pipeline
+## Graphics pipeline
 
-Každé těleso je uložené jako seznam vrcholů (`vertexBuffer`) a seznam dvojic indexů tvořících hrany (`indexBuffer`).
-`Renderer3D` pro každou hranu:
+Each solid is stored as a list of vertices (`vertexBuffer`) and a list of index pairs forming its edges (`indexBuffer`).
+For every edge, `Renderer3D`:
 
-1. vynásobí oba vrcholy maticí **MVP** (modelovací × pohledová × projekční),
-2. provede **ořezání** v homogenních souřadnicích: `-w ≤ x ≤ w`, `-w ≤ y ≤ w`, `0 ≤ z ≤ w`,
-3. provede **dehomogenizaci** (vydělení souřadnicí `w`),
-4. provede **transformaci do okna** (převrácení osy Y a převod z intervalu `[-1, 1]` na pixely),
-5. vykreslí úsečku **Bresenhamovým algoritmem**.
+1. multiplies both vertices by the **MVP** matrix (model × view × projection),
+2. performs **clipping** in homogeneous coordinates: `-w ≤ x ≤ w`, `-w ≤ y ≤ w`, `0 ≤ z ≤ w`,
+3. performs **dehomogenization** (division by the `w` coordinate),
+4. performs the **viewport transformation** (flipping the Y axis and mapping the `[-1, 1]` range to pixels),
+5. draws the line using **Bresenham's algorithm**.
 
-Pohledovou matici počítá třída `Camera` (azimut, zenit, poloha, režim 1./3. osoby). Projekce je buď
-`Mat4PerspRH` (zorný úhel 90°), nebo `Mat4OrthoRH`.
+The view matrix is computed by the `Camera` class (azimuth, zenith, position, first/third-person mode). The projection is either
+`Mat4PerspRH` (90° field of view) or `Mat4OrthoRH`.
 
-## Použité knihovny
+## Libraries used
 
 - Java Swing / AWT
-- balíček `transforms` od PGRF FIM UHK (matice, vektory, kamera, kubiky)
+- the `transforms` package by PGRF FIM UHK (matrices, vectors, camera, cubics)
